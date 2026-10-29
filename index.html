@@ -108,6 +108,12 @@ details[open] .arr{transform:rotate(180deg)}
 .v2 .hero h1{font-size:44px;line-height:1;margin:10px 0 8px;font-weight:800}
 .v2 .hero p{color:#cbbdae;font-size:14px}
 .v2 nav{position:sticky;top:0;z-index:3;display:flex;gap:6px;padding:10px 16px;background:rgba(251,245,236,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.v2 nav button{flex:1;text-align:center;font-size:13px;font-weight:600;padding:9px 0;border-radius:99px;color:var(--muted);background:#efe5d6;transition:background 150ms ease-out,color 150ms ease-out}
+.v2 nav button[aria-selected=true]{background:var(--ink);color:#fff}
+.v2 section[hidden]{display:none}
+.v2 .backt{display:block;color:var(--accent);font-size:14px;font-weight:600;padding:8px 0 0}
+.v2 .likeform{display:flex;gap:8px;margin-top:6px}.v2 .likeform input{flex:1;min-width:0;font-size:16px;padding:10px 12px;border-radius:12px}.v2 .likeform button{background:var(--ink);color:#fff;font-weight:600;padding:0 14px;border-radius:12px}
+.v2 .likemsg{font-size:13px;color:#2f5a38;min-height:18px;margin-top:4px}
 .v2 nav a{flex:1;text-align:center;font-size:13px;font-weight:600;padding:7px 0;border-radius:99px;color:var(--muted);text-decoration:none;background:#efe5d6}
 .v2 section{padding:26px 24px 4px}
 .v2 .num{font-size:12px;color:var(--accent);font-weight:700;letter-spacing:.1em}
@@ -570,6 +576,7 @@ function openPrefs(name){
   const inf=INFO[name],p=stage.querySelector('.phone'),sh=document.createElement('div');sh.className='sheet';
   sh.innerHTML=`<div class="sheet-in"><h2>מה ${name} אוכל? <button data-close aria-label="סגירה">×</button></h2><p class="rm">${inf[0]?inf[0]+". ":""}סמני מה כן, ובטלי מה לא. הכמויות מתעדכנות.</p>
    <label class="lbl">הערה (אופציונלי)</label><textarea data-note="${name}" rows="2">${inf[1]}</textarea>
+   <label class="lbl">להוסיף משהו שהוא או היא אוהבים</label><form class="likeform" data-like="${name}"><input name="x" type="text" dir="auto" enterkeyhint="done" autocomplete="off" placeholder="למשל: שניצל, קציצות, סלט כרוב" aria-label="להוסיף מאכל אהוב"><button type="submit">הוספה</button></form><p class="likemsg" id="likemsg"></p>
    ${K.map(c=>`<h5>${c}</h5>`+byCat(c).map(([id,d])=>`<button class="item${d.who.includes(name)?' done':''}" data-pref="${id}|${name}"><span class="check"></span><span class="nm">${d.n}</span></button>`).join('')).join('')}
    <button class="cta2" data-close>סיום</button><button class="reset" data-reset>איפוס להצעה המקורית</button></div>`;
   sh.addEventListener('click',e=>{if(e.target===sh)sh.remove()});p.appendChild(sh)}
@@ -577,6 +584,7 @@ function save(){try{localStorage.setItem(PK2,JSON.stringify({who:Object.fromEntr
 function renderTable(){const e=stage.querySelector('#tbl');if(!e)return;if(SEL&&SEL.t==='p'&&GONE[SEL.id])SEL=null;e.innerHTML=tableHTML()}
 
 /* ---------- screen ---------- */
+let TAB='t';
 const old=document.getElementById('meal'),stage=old.cloneNode(false);old.replaceWith(stage);stage.hidden=false;
 const screen = () => `<div class="phone v2">
   <div class="scroll" id="sc">
@@ -585,22 +593,22 @@ const screen = () => `<div class="phone v2">
      <small>COME OVER · שישי 30.10</small>
      <h1 class="enter">ארוחת<br>שישי</h1>
      <p id="heroP">${heroP()}</p></div>
-   <nav><a href="#t">שולחן</a><a href="#m">תפריט</a><a href="#r">מתכונים</a><a href="#s">קניות</a></nav>
-   <section id="t"><div class="num">01</div><h2>השולחן</h2><div id="tbl">${tableHTML()}</div></section>
-   <section id="m"><div class="num">02</div><h2>התפריט</h2>
+   <nav role="tablist">${[["t","שולחן"],["m","תפריט"],["r","מתכונים"],["s","קניות"]].map(([k,n])=>`<button role="tab" data-tab="${k}" aria-selected="${k===TAB}">${n}</button>`).join('')}</nav>
+   <section id="t" ${TAB==='t'?'':'hidden'}><div class="num">01</div><h2>השולחן</h2><div id="tbl">${tableHTML()}</div></section>
+   <section id="m" ${TAB==='m'?'':'hidden'}><button class="backt" data-tab="t">‹ חזרה לשולחן</button><div class="num">02</div><h2>התפריט</h2>
      <div class="group"><h5>מי מגיע · לחיצה על שם מעדכנת העדפות</h5><div class="who" id="guests">${guestsHTML()}</div></div>
      ${K.map(c=>`<div class="group"><h5>${c}</h5>`+byCat(c).map(([id,d])=>rowHTML(id)).join('')+'</div>').join('')}
    </section>
-   <section id="r"><div class="num">03</div><h2>איך מכינים</h2>
+   <section id="r" ${TAB==='r'?'':'hidden'}><button class="backt" data-tab="t">‹ חזרה לשולחן</button><div class="num">03</div><h2>איך מכינים</h2>
      <div id="recs">${recsHTML()}</div>
    </section>
-   <section id="s"><div class="num">04</div><h2>רשימת קניות</h2>
+   <section id="s" ${TAB==='s'?'':'hidden'}><button class="backt" data-tab="t">‹ חזרה לשולחן</button><div class="num">04</div><h2>רשימת קניות</h2>
      <div id="shop">${shopHTML()}</div>
      <form class="addform" data-add><input name="x" type="text" dir="auto" enterkeyhint="done" autocomplete="off" placeholder="להוסיף לרשימה (למשל: מפיות, 2 בקבוקי קולה)" aria-label="להוסיף פריט לרשימת הקניות"><button type="submit">הוספה</button></form>
-   </section>
-   <button class="cta" data-copy>העתיקי את הרשימה לוואטסאפ</button>
+      <button class="cta" data-copy>העתיקי את הרשימה לוואטסאפ</button>
    <button class="cta alt" data-serve>הוגש! שמרי את הארוחה</button>
    <button class="linkq" data-restart>ארוחה חדשה (מוחק את התכנון הזה)</button>
+   </section>
   </div></div>`;
 if(S.restore){try{const j=JSON.parse(localStorage.getItem(PK2)||'null');if(j){for(const i in j.who)if(D[i])D[i].who=j.who[i].filter(w=>GUESTS.includes(w));Object.assign(GONE,j.gone||{});EXTRA=(j.extra||[]).filter(x=>typeof x==='string');(j.done||[]).forEach(x=>DONE.add(x));for(const n in j.notes)if(INFO[n])INFO[n][1]=j.notes[n]}}catch(_){}S.restore=false}
 stage.innerHTML = screen();
@@ -608,15 +616,27 @@ stage.innerHTML = screen();
 /* ---------- in-variant interactions ---------- */
 let toastTimer;
 function toast(msg,undo){stage.querySelector('.toast')?.remove();clearTimeout(toastTimer);const p=stage.querySelector('.phone');const t=document.createElement('div');t.className='toast';t.textContent=msg;if(undo){const b=document.createElement('button');b.textContent='ביטול';b.onclick=()=>{undo();t.remove()};t.appendChild(b)}p.appendChild(t);toastTimer=setTimeout(()=>t.remove(),undo?4000:1800)}
+function showTab(k){TAB=k;stage.querySelectorAll('nav [data-tab]').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===k));
+  ['t','m','r','s'].forEach(x=>{const e=stage.querySelector('#'+x);if(e)e.hidden=x!==k});
+  const sc=stage.querySelector('#sc'),nav=sc.querySelector('nav');sc.scrollTo({top:Math.max(0,nav.offsetTop),behavior:'instant'})}
 function refreshAll(){save();renderTable();for(const id in D)setWho(id);stage.querySelector('#guests').innerHTML=guestsHTML();stage.querySelector('#heroP').textContent=heroP()}
 function setWho(id){const r=stage.querySelector(`[data-row="${id}"]`);r.querySelector('.who').innerHTML=whoHTML(id);r.querySelector('.meta').textContent=metaHTML(id);r.classList.toggle('hide',!!D[id].alt&&!D[id].who.length);stage.querySelector('#shop').innerHTML=shopHTML();stage.querySelector('#recs').innerHTML=recsHTML();renderTable()}
-stage.addEventListener('submit',e=>{e.preventDefault();const i=e.target.elements.x,v=i.value.trim();if(!v)return;EXTRA.push(v.slice(0,60));i.value='';save();stage.querySelector('#shop').innerHTML=shopHTML();toast('נוסף לרשימה')});
+stage.addEventListener('submit',e=>{e.preventDefault();
+  if(e.target.dataset.like){const nm=e.target.dataset.like,i=e.target.elements.x,v=i.value.trim();if(!v)return;
+    const added=[],notes=[];
+    v.split(/,|\sו(?=\S)/).map(x=>x.trim()).filter(Boolean).forEach(it=>{let best=null,bl=0;CAT.forEach(d=>d.kw.forEach(k=>{if(it.includes(k)&&k.length>bl){best=d;bl=k.length}}));
+      if(best&&D[best.id]){if(!D[best.id].who.includes(nm))D[best.id].who.push(nm);added.push(best.n)}else notes.push(it)});
+    if(notes.length){const n=INFO[nm];n[1]=(n[1]?n[1]+' ':'')+'אוהב/ת גם: '+notes.join(', ')+'.';const ta=stage.querySelector('[data-note]');if(ta)ta.value=n[1]}
+    i.value='';refreshAll();
+    stage.querySelector('#likemsg').textContent=(added.length?'נוסף: '+added.join(', ')+'. ':'')+(notes.length?'לא מצאתי מנה ל: '+notes.join(', ')+', שמרתי בהערה.':'');return}
+  const i=e.target.elements.x,v=i.value.trim();if(!v)return;EXTRA.push(v.slice(0,60));i.value='';save();stage.querySelector('#shop').innerHTML=shopHTML();toast('נוסף לרשימה')});
 stage.addEventListener('input',e=>{if(e.target.dataset.note){INFO[e.target.dataset.note][1]=e.target.value;save();renderTable()}});
 stage.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.closest('[data-seat],[data-dish]')){e.preventDefault();e.target.closest('[data-seat],[data-dish]').dispatchEvent(new MouseEvent('click',{bubbles:true}))}});
 stage.addEventListener('click',e=>{
-  const t=e.target.closest('[data-check],[data-copy],[data-menu],[data-serve],[data-restart],[data-rm],[data-rmg],[data-addg],[data-seat],[data-dish],[data-xdel],[data-pref-open],[data-pref],[data-close],[data-reset],.v2 nav a');
+  const t=e.target.closest('[data-tab],[data-check],[data-copy],[data-menu],[data-serve],[data-restart],[data-rm],[data-rmg],[data-addg],[data-seat],[data-dish],[data-xdel],[data-pref-open],[data-pref],[data-close],[data-reset],.v2 nav a');
   if(!t)return;
-  if(t.hasAttribute('data-menu')){leaveMeal()}
+  if(t.dataset.tab){showTab(t.dataset.tab)}
+  else if(t.hasAttribute('data-menu')){leaveMeal()}
   else if(t.hasAttribute('data-restart')){S.names=[];S.menu=null;S.kosher=null;S.txt={};S.drop={};S.kWho=new Set();clearPlan();leaveMeal(0)}
   else if(t.hasAttribute('data-serve')){const ids=Object.keys(D).filter(i=>D[i].who.length);try{localStorage.setItem(HK,JSON.stringify({date:'2026-10-30',ids}))}catch(_){}t.disabled=true;t.textContent='✔ נשמר. בפעם הבאה לא אחזור על זה';toast('נשמר')}
   else if(t.dataset.xdel!==undefined){const n=EXTRA.splice(+t.dataset.xdel,1)[0];save();stage.querySelector('#shop').innerHTML=shopHTML();toast(`${n} נמחק`,()=>{EXTRA.push(n);save();stage.querySelector('#shop').innerHTML=shopHTML()})}
