@@ -138,6 +138,11 @@ details[open] .arr{transform:rotate(180deg)}
 .v2 .tcard .pd{padding:7px 0;border-bottom:1px solid var(--line);font-size:16px}.v2 .tcard .pd:last-child{border:0}
 .v2 .tcard .hint{color:var(--muted);font-size:14px;text-align:center;padding:22px 0}
 .v2 .row.hide{display:none}
+.v2 .editrow{display:grid;grid-template-columns:1fr 110px;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
+.v2 .editrow input{min-width:0;font:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink)}
+.v2 .editrow input[hidden]{display:none}.v2 .editrow input:only-of-type{grid-column:1/-1}
+.v2 .erb{grid-column:1/-1;display:flex;gap:8px}.v2 .erb button{flex:1;padding:10px;border-radius:12px;background:var(--ink);color:#fff;font-weight:600;font-size:14px}
+.v2 .erb button[type=button]{background:#efe5d6;color:var(--ink)}.v2 .erb .dng{color:#a3331a}
 .v2 .rd{margin-top:8px}.v2 .rd summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--accent);padding:8px 14px;border:1px solid var(--accent);border-radius:99px;transition:transform 120ms ease-out}
 .v2 .rd summary::-webkit-details-marker{display:none}.v2 .rd summary:active{transform:scale(.97)}
 .v2 .rd .arr{display:inline-block;transition:transform 200ms var(--ease)}.v2 .rd[open] .arr{transform:rotate(180deg)}
@@ -442,10 +447,18 @@ function need(){
   for(const id in ING){const cnt=D[id].who.length;if(!cnt)continue;
     for(const [n,g,u,per,fixed,once] of ING[id]){const k=n+'|'+g;t[k]=t[k]||{n,g,u,v:0};if(once)t[k].v=Math.max(t[k].v,per);else t[k].v+=fixed?per:per*cnt}}
   return t}
-function shopHTML(){
-  const t=Object.values(need());
-  return [B,V,Y].map(g=>`<div class="group"><h5>${g}</h5>`+t.filter(i=>i.g===g).map(i=>`<button class="item${DONE.has(i.n)?' done':''}" data-check data-name="${i.n}"><span class="check"></span><span class="nm">${i.n}</span><span class="q">${fmtQ(i.v,i.u)}</span></button>`).join('')+'</div>').join('')
-   +(EXTRA.length?`<div class="group"><h5>הוספתי בעצמי</h5>${EXTRA.map((n,i)=>`<div class="xrow"><button class="item${DONE.has(n)?' done':''}" data-check data-name="${n.replace(/"/g,'&quot;')}"><span class="check"></span><span class="nm">${n.replace(/</g,'&lt;')}</span></button><button class="xdel" data-xdel="${i}" aria-label="מחיקה">×</button></div>`).join('')}</div>`:'')+`<div class="group"><h5>כנראה יש בבית</h5>${PANTRY.map(n=>`<button class="item${DONE.has(n)?' done':''}" data-check data-name="${n}"><span class="check"></span><span class="nm">${n}</span><span class="q">בדקי</span></button>`).join('')}</div>`}
+const EDIT={};let EDITING=null; /* manual changes: key -> {n,q} or {del:1} */
+function shopData(){
+  const t=Object.values(need()).map(i=>({key:'n|'+i.n+'|'+i.g,n:i.n,q:fmtQ(i.v,i.u),g:i.g})),out=[];
+  const fix=r=>{const o=EDIT[r.key]||{};return o.del?null:{key:r.key,n:o.n??r.n,q:o.q??r.q}};
+  [B,V,Y].forEach(g=>{const rows=t.filter(i=>i.g===g).map(fix).filter(Boolean);if(rows.length)out.push([g,rows])});
+  if(EXTRA.length)out.push(['הוספתי בעצמי',EXTRA.map((n,i)=>({key:'x|'+i,n,q:'',extra:1}))]);
+  const pr=PANTRY.map(n=>fix({key:'p|'+n,n,q:'בדקי'})).filter(Boolean);if(pr.length)out.push(['כנראה יש בבית',pr]);
+  return out}
+const shopRow=r=>{const k=esc(r.key);
+  if(EDITING===r.key)return `<form class="editrow" data-editf="${k}"><input name="n" value="${esc(r.n)}" aria-label="שם הפריט"><input name="q" value="${esc(r.q)}" aria-label="כמות" placeholder="כמות" ${r.extra?'hidden':''}><div class="erb"><button type="submit">שמירה</button><button type="button" data-editcancel>ביטול</button><button type="button" class="dng" data-editdel="${k}">הסרה</button></div></form>`;
+  return `<div class="xrow"><button class="item${DONE.has(r.key)?' done':''}" data-check data-name="${k}"><span class="check"></span><span class="nm">${esc(r.n)}</span><span class="q">${esc(r.q)}</span></button><button class="xdel" data-edit="${k}" aria-label="עריכת ${esc(r.n)}">✎</button></div>`};
+function shopHTML(){return shopData().map(([g,rows])=>`<div class="group"><h5>${g}</h5>${rows.map(shopRow).join('')}</div>`).join('')}
 /* ---------- detailed recipes: amounts scale with the people left on each dish ---------- */
 const rq=x=>Math.round(x*4)/4;
 const frac=q=>{const w=Math.floor(q+1e-9),r=Math.round((q-w)*4)/4;const f={0:'',.25:'¼',.5:'½',.75:'¾'}[r];return w?`${w}${f}`:f};
@@ -589,7 +602,7 @@ function openPrefs(name){
    ${K.map(c=>`<h5>${c}</h5>`+byCat(c).map(([id,d])=>`<button class="item${d.who.includes(name)?' done':''}" data-pref="${id}|${name}"><span class="check"></span><span class="nm">${d.n}</span></button>`).join('')).join('')}
    <button class="cta2" data-close>סיום</button><button class="reset" data-reset>איפוס להצעה המקורית</button></div>`;
   sh.addEventListener('click',e=>{if(e.target===sh)sh.remove()});p.appendChild(sh)}
-function save(){try{localStorage.setItem(PK2,JSON.stringify({who:Object.fromEntries(Object.entries(D).map(([i,d])=>[i,d.who])),gone:GONE,extra:EXTRA,done:[...DONE],notes:Object.fromEntries(Object.entries(INFO).map(([n,v])=>[n,v[1]]))}))}catch(_){}}
+function save(){try{localStorage.setItem(PK2,JSON.stringify({who:Object.fromEntries(Object.entries(D).map(([i,d])=>[i,d.who])),gone:GONE,extra:EXTRA,done:[...DONE],edit:EDIT,notes:Object.fromEntries(Object.entries(INFO).map(([n,v])=>[n,v[1]]))}))}catch(_){}}
 function renderTable(){const e=stage.querySelector('#tbl');if(!e)return;if(SEL&&SEL.t==='p'&&GONE[SEL.id])SEL=null;e.innerHTML=tableHTML()}
 
 /* ---------- screen ---------- */
@@ -616,7 +629,7 @@ const screen = () => `<div class="phone v2">
    <button class="linkq" data-restart>ארוחה חדשה (מוחק את התכנון הזה)</button>
    </section>
   </div></div>`;
-if(S.restore){try{const j=JSON.parse(localStorage.getItem(PK2)||'null');if(j){for(const i in j.who)if(D[i])D[i].who=j.who[i].filter(w=>GUESTS.includes(w));Object.assign(GONE,j.gone||{});EXTRA=(j.extra||[]).filter(x=>typeof x==='string');(j.done||[]).forEach(x=>DONE.add(x));for(const n in j.notes)if(INFO[n])INFO[n][1]=j.notes[n]}}catch(_){}S.restore=false}
+if(S.restore){try{const j=JSON.parse(localStorage.getItem(PK2)||'null');if(j){for(const i in j.who)if(D[i])D[i].who=j.who[i].filter(w=>GUESTS.includes(w));Object.assign(GONE,j.gone||{});EXTRA=(j.extra||[]).filter(x=>typeof x==='string');(j.done||[]).forEach(x=>DONE.add(x));Object.assign(EDIT,j.edit||{});for(const n in j.notes)if(INFO[n])INFO[n][1]=j.notes[n]}}catch(_){}S.restore=false}
 stage.innerHTML = screen();
 
 /* ---------- in-variant interactions ---------- */
@@ -628,6 +641,10 @@ function showTab(k){TAB=k;stage.querySelectorAll('nav [data-tab]').forEach(b=>b.
 function refreshAll(){save();renderTable();for(const id in D)setWho(id);stage.querySelector('#guests').innerHTML=guestsHTML();stage.querySelector('#heroP').textContent=heroP()}
 function setWho(id){const r=stage.querySelector(`[data-row="${id}"]`);r.querySelector('.who').innerHTML=whoHTML(id);r.querySelector('.meta').textContent=metaHTML(id);r.classList.toggle('hide',!!D[id].alt&&!D[id].who.length);stage.querySelector('#shop').innerHTML=shopHTML();const rb=r.querySelector('.rb');if(rb)rb.innerHTML=recipeBody(id);renderTable()}
 stage.addEventListener('submit',e=>{e.preventDefault();
+  if(e.target.dataset.editf!==undefined){const k=e.target.dataset.editf,n=e.target.elements.n.value.trim(),q=e.target.elements.q.value.trim();
+    if(!n)return;
+    if(k.startsWith('x|'))EXTRA[+k.slice(2)]=n.slice(0,60);else EDIT[k]={n:n.slice(0,60),q:q.slice(0,40)};
+    EDITING=null;save();stage.querySelector('#shop').innerHTML=shopHTML();toast('נשמר');return}
   if(e.target.dataset.like){const nm=e.target.dataset.like,i=e.target.elements.x,v=i.value.trim();if(!v)return;
     const added=[],notes=[];
     v.split(/,|\sו(?=\S)/).map(x=>x.trim()).filter(Boolean).forEach(it=>{let best=null,bl=0;CAT.forEach(d=>d.kw.forEach(k=>{if(it.includes(k)&&k.length>bl){best=d;bl=k.length}}));
@@ -639,9 +656,14 @@ stage.addEventListener('submit',e=>{e.preventDefault();
 stage.addEventListener('input',e=>{if(e.target.dataset.note){INFO[e.target.dataset.note][1]=e.target.value;save()}});
 stage.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.closest('[data-seat],[data-dish]')){e.preventDefault();e.target.closest('[data-seat],[data-dish]').dispatchEvent(new MouseEvent('click',{bubbles:true}))}});
 stage.addEventListener('click',e=>{
-  const t=e.target.closest('[data-tab],[data-check],[data-copy],[data-menu],[data-serve],[data-restart],[data-rm],[data-rmg],[data-addg],[data-seat],[data-dish],[data-xdel],[data-pref-open],[data-pref],[data-close],[data-reset],.v2 nav a');
+  const t=e.target.closest('[data-edit],[data-editcancel],[data-editdel],[data-tab],[data-check],[data-copy],[data-menu],[data-serve],[data-restart],[data-rm],[data-rmg],[data-addg],[data-seat],[data-dish],[data-xdel],[data-pref-open],[data-pref],[data-close],[data-reset],.v2 nav a');
   if(!t)return;
-  if(t.dataset.tab){showTab(t.dataset.tab)}
+  if(t.dataset.edit!==undefined){EDITING=t.dataset.edit;stage.querySelector('#shop').innerHTML=shopHTML();stage.querySelector('.editrow input')?.focus({preventScroll:true})}
+  else if(t.hasAttribute('data-editcancel')){EDITING=null;stage.querySelector('#shop').innerHTML=shopHTML()}
+  else if(t.dataset.editdel!==undefined){const k=t.dataset.editdel,prev=EDIT[k];
+    if(k.startsWith('x|')){const i=+k.slice(2),n=EXTRA.splice(i,1)[0];EDITING=null;save();stage.querySelector('#shop').innerHTML=shopHTML();toast(`${n} הוסר`,()=>{EXTRA.splice(i,0,n);save();stage.querySelector('#shop').innerHTML=shopHTML()})}
+    else{EDIT[k]={...(prev||{}),del:1};EDITING=null;save();stage.querySelector('#shop').innerHTML=shopHTML();toast('הוסר מהרשימה',()=>{if(prev)EDIT[k]=prev;else delete EDIT[k];save();stage.querySelector('#shop').innerHTML=shopHTML()})}}
+  else if(t.dataset.tab){showTab(t.dataset.tab)}
   else if(t.hasAttribute('data-menu')){leaveMeal()}
   else if(t.hasAttribute('data-restart')){S.names=[];S.menu=null;S.kosher=null;S.txt={};S.drop={};S.kWho=new Set();clearPlan();leaveMeal(0)}
   else if(t.hasAttribute('data-serve')){const ids=Object.keys(D).filter(i=>D[i].who.length);try{localStorage.setItem(HK,JSON.stringify({date:'2026-10-30',ids}))}catch(_){}t.disabled=true;t.textContent='✔ נשמר. בפעם הבאה לא אחזור על זה';toast('נשמר')}
@@ -668,7 +690,7 @@ stage.addEventListener('click',e=>{
     toast(`${w} ירד מ${D[id].n}`,()=>{D[id].who.splice(i,0,w);setWho(id)});
   } else if(t.hasAttribute('data-check')){const n=t.dataset.name;DONE.has(n)?DONE.delete(n):DONE.add(n);t.classList.toggle('done');save()}
   else if(t.hasAttribute('data-copy')){
-    const txt='רשימת קניות לשישי\n'+[B,V,Y].map(g=>g+':\n'+Object.values(need()).filter(i=>i.g===g).map(i=>`- ${i.n} (${fmtQ(i.v,i.u)})`).join('\n')).join('\n')+(EXTRA.length?'\nעוד:\n'+EXTRA.map(n=>`- ${n}`).join('\n'):'');
+    const txt='רשימת קניות לשישי\n'+shopData().filter(([g])=>g!=='כנראה יש בבית').map(([g,rows])=>g+':\n'+rows.map(r=>`- ${r.n}${r.q?' ('+r.q+')':''}`).join('\n')).join('\n');
     (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('הועתק!'),()=>toast('אי אפשר להעתיק כאן'));
   } else if(t.matches('.v2 nav a')){
     e.preventDefault();const sc=stage.querySelector('#sc'),tg=sc.querySelector(t.getAttribute('href'));sc.scrollTo({top:tg.offsetTop-52,behavior:'instant'});
