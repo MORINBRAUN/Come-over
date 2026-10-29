@@ -75,6 +75,9 @@ a.cta{display:block;text-align:center;text-decoration:none}
 @media (prefers-reduced-motion:reduce){.spin{animation-duration:2.4s}}
 
 /* ===== meal screen (table, menu, recipes, shopping) ===== */
+.scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scroll-behavior:smooth;padding-bottom:28px;-webkit-overflow-scrolling:touch}
+#meal{width:390px;max-width:100%;display:flex;justify-content:center}
+#meal .phone{width:100%}
 
 :root{
   --cream:#fbf5ec; --paper:#fffdf9; --ink:#2a211b; --muted:#7d6e62; --line:#eadfce;
@@ -642,7 +645,7 @@ stage.addEventListener('click',e=>{
     const txt='רשימת קניות לשישי\n'+[B,V,Y].map(g=>g+':\n'+Object.values(need()).filter(i=>i.g===g).map(i=>`- ${i.n} (${fmtQ(i.v,i.u)})`).join('\n')).join('\n')+(EXTRA.length?'\nעוד:\n'+EXTRA.map(n=>`- ${n}`).join('\n'):'');
     (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('הועתק!'),()=>toast('אי אפשר להעתיק כאן'));
   } else if(t.matches('.v2 nav a')){
-    e.preventDefault();const sc=stage.querySelector('#sc'),tg=sc.querySelector(t.getAttribute('href'));sc.scrollTo({top:tg.offsetTop-52});
+    e.preventDefault();const sc=stage.querySelector('#sc'),tg=sc.querySelector(t.getAttribute('href'));sc.scrollTo({top:tg.offsetTop-52,behavior:'instant'});
   }
 });
 
