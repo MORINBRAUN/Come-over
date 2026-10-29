@@ -138,6 +138,13 @@ details[open] .arr{transform:rotate(180deg)}
 .v2 .tcard .pd{padding:7px 0;border-bottom:1px solid var(--line);font-size:16px}.v2 .tcard .pd:last-child{border:0}
 .v2 .tcard .hint{color:var(--muted);font-size:14px;text-align:center;padding:22px 0}
 .v2 .row.hide{display:none}
+.v2 .rd{margin-top:8px}.v2 .rd summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--accent);padding:8px 14px;border:1px solid var(--accent);border-radius:99px;transition:transform 120ms ease-out}
+.v2 .rd summary::-webkit-details-marker{display:none}.v2 .rd summary:active{transform:scale(.97)}
+.v2 .rd .arr{display:inline-block;transition:transform 200ms var(--ease)}.v2 .rd[open] .arr{transform:rotate(180deg)}
+.v2 .rd .rb{margin-top:10px;padding:12px 14px;background:var(--paper);border:1px solid var(--line);border-radius:14px}
+.v2 .tcard .item.done .nm{text-decoration:none;color:var(--ink);font-weight:600}
+.v2 .tcard textarea{width:100%;font:inherit;font-size:14px;border:1px solid var(--line);border-radius:12px;padding:8px 10px;background:var(--cream);color:var(--ink);resize:none}
+.v2 .tcard .lbl{display:block;font-size:12px;color:var(--muted);margin-top:12px}
 .v2 .xrow{display:flex;align-items:center}.v2 .xrow .item{flex:1}.v2 .xdel{width:44px;height:44px;font-size:22px;color:var(--muted);flex:none}.v2 .xdel:active{transform:scale(.9)}
 .v2 .addform{display:flex;gap:8px;margin-top:14px}.v2 .addform input{flex:1;min-width:0;font:inherit;font-size:16px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink)}.v2 .addform input:focus{outline:2px solid var(--accent);outline-offset:1px}
 .v2 .addform button{background:var(--ink);color:#fff;font-weight:600;padding:0 16px;border-radius:14px;transition:transform 120ms ease-out}.v2 .addform button:active{transform:scale(.97)}
@@ -513,19 +520,18 @@ const R={
   done:'טועמים: קצת מלח ולימון, לפי הטעם.'}
 };
 const ytLink=q=>`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`;
-const recsHTML=()=>Object.entries(D).filter(([id,d])=>d.who.length&&R[id]).map(([id,d])=>{
-  const r=R[id],cnt=d.who.length,p=ING[id][0][3]*cnt,K=p*(r.w||1),mi=d.mi||0,meth=DISH[id].M[mi];
-  return `<div class="rec"><h4>${d.n}</h4><p class="rm">${cnt} ${cnt===1?'איש':'אנשים'} · ${meth.n} · ${meth.t}</p>
+const recipeBody=id=>{const d=D[id],r=R[id];if(!r)return '<p class="eq">אין עדיין מתכון למנה הזאת.</p>';if(!d.who.length)return '<p class="eq">אף אחד לא מסומן למנה הזאת, אז אין כמויות.</p>';
+  const cnt=d.who.length,p=ING[id][0][3]*cnt,K=p*(r.w||1),mi=d.mi||0,meth=DISH[id].M[mi];
+  return `<p class="rm">${cnt} ${cnt===1?'איש':'אנשים'} · ${meth.n} · ${meth.t}</p>
    <h6>מה צריך</h6><ul class="need">${r.need(K,p,cnt,mi).map(([n,a])=>`<li><span>${n}</span><b>${a}</b></li>`).join('')}</ul>
    <h6>ציוד</h6><p class="eq">${typeof r.eq==='function'?r.eq(mi):r.eq}</p>
    <h6>שלבים</h6><ol>${r.steps(K,p,cnt,mi).map(s=>`<li>${s}</li>`).join('')}</ol>
    <p class="done-line">מוכן כש: ${r.done}</p>
-   <a class="vid" href="${ytLink(d.n+' '+meth.n+' מתכון צעד אחר צעד')}" target="_blank" rel="noopener">▶ חיפוש סרטון ביוטיוב</a></div>`}).join('');
-
+   <a class="vid" href="${ytLink(d.n+' '+meth.n+' מתכון צעד אחר צעד')}" target="_blank" rel="noopener">▶ חיפוש סרטון ביוטיוב</a>`};
 const metaHTML=id=>{const cnt=D[id].who.length;if(!cnt)return '';const [n,,u,per,fixed]=ING[id][0];return `${cnt} ${cnt===1?'איש':'אנשים'} · לקנות ${fmtQ(fixed?per:per*cnt,u)}${u==='kg'?' '+n:''}`};
 const K = ['עיקריות','תוספות','סלטים'];
 const byCat = c => Object.entries(D).filter(([,d])=>d.c===c);
-const rowHTML = id => { const d=D[id]; return `<div class="row${d.alt&&!d.who.length?' hide':''}" data-row="${id}"><b>${d.n}</b><p class="meta">${metaHTML(id)}</p><div class="who">${whoHTML(id)}</div></div>` };
+const rowHTML = id => { const d=D[id]; return `<div class="row${d.alt&&!d.who.length?' hide':''}" data-row="${id}"><b>${d.n}</b><p class="meta">${metaHTML(id)}</p><div class="who">${whoHTML(id)}</div><details class="rd" data-rd="${id}"><summary>איך מכינים <span class="arr">⌄</span></summary><div class="rb">${recipeBody(id)}</div></details></div>` };
 const whoHTML = id => D[id].who.length ? D[id].who.map(w=>`<span class="pill"><button class="pn" data-pref-open="${w}">${w}</button><button data-rm="${id}|${w}" aria-label="להוריד את ${w} מ${D[id].n}">×</button></span>`).join('') : '<span class="empty-who">אף אחד לא מסומן למנה הזאת</span>';
 const bar = t => `<div class="status"><span>9:41</span><span>${t||''}</span></div>`;
 
@@ -540,8 +546,7 @@ function seatSVG(name,x,y,ang,sel){
   const gi=GUESTS.indexOf(name),kid=KIDS.has(name),hr=kid?8:11,sx=kid?.85:1;
   const dx=ang===-90?-1:ang===90?1:0,dy=ang===0?-1:ang===180?1:0;
   const nx=x+dx*62,ny=y+dy*60+(dy>0?4:0)+(dx?4:0);
-  return `<g transform="translate(${x},${y}) rotate(${ang})" class="person${sel?' sel':''}" data-seat="${name}" role="button" tabindex="0" aria-label="${name}">
-    <circle cy="-22" r="26" fill="transparent"/>
+  return `<g class="person${sel?' sel':''}" data-seat="${name}" role="button" tabindex="0" aria-label="${name}"><circle cx="${x+dx*22}" cy="${y+dy*22}" r="30" fill="transparent"/><g transform="translate(${x},${y}) rotate(${ang})">
     <circle cy="17" r="13" fill="#fff" stroke="#e2d6c4"/><circle cy="17" r="8" fill="none" stroke="#eee6d8"/>
     <rect x="-25" y="7" width="2.5" height="20" rx="1.2" fill="#b9b0a4"/><rect x="22" y="7" width="3" height="20" rx="1.5" fill="#b9b0a4"/>
     <circle cx="18" cy="9" r="5" fill="#bcd9ee" stroke="#8fb6d3"/>
@@ -549,7 +554,7 @@ function seatSVG(name,x,y,ang,sel){
     <ellipse cy="-30" rx="${17*sx}" ry="${9*sx}" fill="${SHIRT[gi%10]}"/>
     <circle cy="-16" r="${hr}" fill="#f1c9a5"/><path d="M${-hr},-16 a${hr},${hr} 0 0 1 ${2*hr},0" fill="${HAIR[gi%10]}"/>
     <circle class="ring" cy="-20" r="${hr+9}" fill="none" stroke="#d1572f" stroke-width="2.5"/>
-  </g><text x="${nx}" y="${ny}" text-anchor="middle" font-size="12" class="nm${sel?' sel':''}">${name}</text>`}
+  </g></g><text x="${nx}" y="${ny}" text-anchor="middle" font-size="12" class="nm${sel?' sel':''}">${name}</text>`}
 function tableSVG(){
   const P=present(),n=P.length,ends=n>=6?2:0,rest=n-ends,topN=Math.ceil(rest/2);
   let i=0;const L=ends?[P[i++]]:[],T_=P.slice(i,i+topN);i+=topN;const Rr=ends?[P[i++]]:[],Bt=P.slice(i);
@@ -567,7 +572,11 @@ function cardHTML(){
   if(!SEL)return `<p class="hint">לחצי על אדם או על מנה על השולחן</p>`;
   if(SEL.t==='d'){const d=D[SEL.id];return `<h3>${d.n}</h3><p class="rm">${d.c} · מוגש ל-${d.who.length} ${d.who.length===1?'איש':'אנשים'}</p><div class="who">${d.who.map(w=>`<span class="pill">${w}</span>`).join('')}</div>`}
   const nm=SEL.id,inf=INFO[nm],mine=Object.entries(D).filter(([,d])=>d.who.includes(nm));
-  return `<h3>${nm} <span class="rm">${inf[0]?"· "+inf[0]:""}</span></h3><button class="editpref" data-pref-open="${nm}">✎ עדכון העדפות</button><p class="note${inf[2]?' warn':''}">${inf[2]?'שימי לב: ':''}${inf[1]}</p>${K.map(c=>{const m=mine.filter(([,d])=>d.c===c);return m.length?`<h5>${c}</h5>`+m.map(([,d])=>`<div class="pd">${d.n}</div>`).join(''):''}).join('')||'<p class="empty-who">עוד לא מסומנת לו אף מנה</p>'}`}
+  return `<h3>${nm} <span class="rm">${inf[0]?"· "+inf[0]:""}</span></h3>
+   <p class="rm">סמני וי ליד מה שהוא אוכל. השינוי מתעדכן בתפריט ובקניות.</p>
+   <label class="lbl">הערה</label><textarea data-note="${nm}" rows="2">${inf[1]}</textarea>
+   ${K.map(c=>`<h5>${c}</h5>`+byCat(c).map(([id,d])=>`<button class="item${d.who.includes(nm)?' done':''}" data-pref="${id}|${nm}"><span class="check"></span><span class="nm">${d.n}</span></button>`).join('')).join('')}
+   <label class="lbl">להוסיף עוד משהו שהוא אוהב</label><form class="likeform" data-like="${nm}"><input name="x" type="text" dir="auto" enterkeyhint="done" autocomplete="off" placeholder="למשל: קציצות, סלט כרוב" aria-label="להוסיף מאכל אהוב"><button type="submit">הוספה</button></form><p class="likemsg" id="likemsg"></p>`}
 function tableHTML(){
   const n=present().length,dn=Object.values(D).filter(d=>d.who.length).length;
   return `<div class="counts"><div><b>${n}</b>אנשים</div><div><b>${n}</b>כיסאות</div><div><b>${n}</b>צלחות</div><div><b>${n}</b>כוסות</div><div><b>${dn}</b>מנות</div></div>${tableSVG()}<div class="tcard" id="tcard">${cardHTML()}</div>`}
@@ -593,16 +602,13 @@ const screen = () => `<div class="phone v2">
      <small>COME OVER · שישי 30.10</small>
      <h1 class="enter">ארוחת<br>שישי</h1>
      <p id="heroP">${heroP()}</p></div>
-   <nav role="tablist">${[["t","שולחן"],["m","תפריט"],["r","מתכונים"],["s","קניות"]].map(([k,n])=>`<button role="tab" data-tab="${k}" aria-selected="${k===TAB}">${n}</button>`).join('')}</nav>
-   <section id="t" ${TAB==='t'?'':'hidden'}><div class="num">01</div><h2>השולחן</h2><div id="tbl">${tableHTML()}</div></section>
-   <section id="m" ${TAB==='m'?'':'hidden'}><button class="backt" data-tab="t">‹ חזרה לשולחן</button><div class="num">02</div><h2>התפריט</h2>
-     <div class="group"><h5>מי מגיע · לחיצה על שם מעדכנת העדפות</h5><div class="who" id="guests">${guestsHTML()}</div></div>
+   <nav role="tablist">${[["t","שולחן"],["m","תפריט"],["s","קניות"]].map(([k,n])=>`<button role="tab" data-tab="${k}" aria-selected="${k===TAB}">${n}</button>`).join('')}</nav>
+   <section id="t" ${TAB==='t'?'':'hidden'}><div class="num">01</div><h2>השולחן</h2><div id="tbl">${tableHTML()}</div>
+     <div class="group"><h5>מי מגיע · לחיצה על שם פותחת את ההעדפות שלו</h5><div class="who" id="guests">${guestsHTML()}</div></div></section>
+   <section id="m" ${TAB==='m'?'':'hidden'}><button class="backt" data-tab="t">‹ חזרה לשולחן</button><div class="num">02</div><h2>התפריט והמתכונים</h2>
      ${K.map(c=>`<div class="group"><h5>${c}</h5>`+byCat(c).map(([id,d])=>rowHTML(id)).join('')+'</div>').join('')}
    </section>
-   <section id="r" ${TAB==='r'?'':'hidden'}><button class="backt" data-tab="t">‹ חזרה לשולחן</button><div class="num">03</div><h2>איך מכינים</h2>
-     <div id="recs">${recsHTML()}</div>
-   </section>
-   <section id="s" ${TAB==='s'?'':'hidden'}><button class="backt" data-tab="t">‹ חזרה לשולחן</button><div class="num">04</div><h2>רשימת קניות</h2>
+   <section id="s" ${TAB==='s'?'':'hidden'}><button class="backt" data-tab="t">‹ חזרה לשולחן</button><div class="num">03</div><h2>רשימת קניות</h2>
      <div id="shop">${shopHTML()}</div>
      <form class="addform" data-add><input name="x" type="text" dir="auto" enterkeyhint="done" autocomplete="off" placeholder="להוסיף לרשימה (למשל: מפיות, 2 בקבוקי קולה)" aria-label="להוסיף פריט לרשימת הקניות"><button type="submit">הוספה</button></form>
       <button class="cta" data-copy>העתיקי את הרשימה לוואטסאפ</button>
@@ -617,20 +623,20 @@ stage.innerHTML = screen();
 let toastTimer;
 function toast(msg,undo){stage.querySelector('.toast')?.remove();clearTimeout(toastTimer);const p=stage.querySelector('.phone');const t=document.createElement('div');t.className='toast';t.textContent=msg;if(undo){const b=document.createElement('button');b.textContent='ביטול';b.onclick=()=>{undo();t.remove()};t.appendChild(b)}p.appendChild(t);toastTimer=setTimeout(()=>t.remove(),undo?4000:1800)}
 function showTab(k){TAB=k;stage.querySelectorAll('nav [data-tab]').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===k));
-  ['t','m','r','s'].forEach(x=>{const e=stage.querySelector('#'+x);if(e)e.hidden=x!==k});
+  ['t','m','s'].forEach(x=>{const e=stage.querySelector('#'+x);if(e)e.hidden=x!==k});
   const sc=stage.querySelector('#sc'),nav=sc.querySelector('nav');sc.scrollTo({top:Math.max(0,nav.offsetTop),behavior:'instant'})}
 function refreshAll(){save();renderTable();for(const id in D)setWho(id);stage.querySelector('#guests').innerHTML=guestsHTML();stage.querySelector('#heroP').textContent=heroP()}
-function setWho(id){const r=stage.querySelector(`[data-row="${id}"]`);r.querySelector('.who').innerHTML=whoHTML(id);r.querySelector('.meta').textContent=metaHTML(id);r.classList.toggle('hide',!!D[id].alt&&!D[id].who.length);stage.querySelector('#shop').innerHTML=shopHTML();stage.querySelector('#recs').innerHTML=recsHTML();renderTable()}
+function setWho(id){const r=stage.querySelector(`[data-row="${id}"]`);r.querySelector('.who').innerHTML=whoHTML(id);r.querySelector('.meta').textContent=metaHTML(id);r.classList.toggle('hide',!!D[id].alt&&!D[id].who.length);stage.querySelector('#shop').innerHTML=shopHTML();const rb=r.querySelector('.rb');if(rb)rb.innerHTML=recipeBody(id);renderTable()}
 stage.addEventListener('submit',e=>{e.preventDefault();
   if(e.target.dataset.like){const nm=e.target.dataset.like,i=e.target.elements.x,v=i.value.trim();if(!v)return;
     const added=[],notes=[];
     v.split(/,|\sו(?=\S)/).map(x=>x.trim()).filter(Boolean).forEach(it=>{let best=null,bl=0;CAT.forEach(d=>d.kw.forEach(k=>{if(it.includes(k)&&k.length>bl){best=d;bl=k.length}}));
       if(best&&D[best.id]){if(!D[best.id].who.includes(nm))D[best.id].who.push(nm);added.push(best.n)}else notes.push(it)});
-    if(notes.length){const n=INFO[nm];n[1]=(n[1]?n[1]+' ':'')+'אוהב/ת גם: '+notes.join(', ')+'.';const ta=stage.querySelector('[data-note]');if(ta)ta.value=n[1]}
+    if(notes.length){const n=INFO[nm];n[1]=(n[1]?n[1]+' ':'')+'אוהב/ת גם: '+notes.join(', ')+'.';}
     i.value='';refreshAll();
     stage.querySelector('#likemsg').textContent=(added.length?'נוסף: '+added.join(', ')+'. ':'')+(notes.length?'לא מצאתי מנה ל: '+notes.join(', ')+', שמרתי בהערה.':'');return}
   const i=e.target.elements.x,v=i.value.trim();if(!v)return;EXTRA.push(v.slice(0,60));i.value='';save();stage.querySelector('#shop').innerHTML=shopHTML();toast('נוסף לרשימה')});
-stage.addEventListener('input',e=>{if(e.target.dataset.note){INFO[e.target.dataset.note][1]=e.target.value;save();renderTable()}});
+stage.addEventListener('input',e=>{if(e.target.dataset.note){INFO[e.target.dataset.note][1]=e.target.value;save()}});
 stage.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.closest('[data-seat],[data-dish]')){e.preventDefault();e.target.closest('[data-seat],[data-dish]').dispatchEvent(new MouseEvent('click',{bubbles:true}))}});
 stage.addEventListener('click',e=>{
   const t=e.target.closest('[data-tab],[data-check],[data-copy],[data-menu],[data-serve],[data-restart],[data-rm],[data-rmg],[data-addg],[data-seat],[data-dish],[data-xdel],[data-pref-open],[data-pref],[data-close],[data-reset],.v2 nav a');
@@ -640,7 +646,7 @@ stage.addEventListener('click',e=>{
   else if(t.hasAttribute('data-restart')){S.names=[];S.menu=null;S.kosher=null;S.txt={};S.drop={};S.kWho=new Set();clearPlan();leaveMeal(0)}
   else if(t.hasAttribute('data-serve')){const ids=Object.keys(D).filter(i=>D[i].who.length);try{localStorage.setItem(HK,JSON.stringify({date:'2026-10-30',ids}))}catch(_){}t.disabled=true;t.textContent='✔ נשמר. בפעם הבאה לא אחזור על זה';toast('נשמר')}
   else if(t.dataset.xdel!==undefined){const n=EXTRA.splice(+t.dataset.xdel,1)[0];save();stage.querySelector('#shop').innerHTML=shopHTML();toast(`${n} נמחק`,()=>{EXTRA.push(n);save();stage.querySelector('#shop').innerHTML=shopHTML()})}
-  else if(t.dataset.prefOpen){openPrefs(t.dataset.prefOpen)}
+  else if(t.dataset.prefOpen){SEL={t:'p',id:t.dataset.prefOpen};showTab('t');renderTable();stage.querySelector('#tcard').scrollIntoView({block:'start',behavior:'instant'})}
   else if(t.dataset.pref){
     const [id,w]=t.dataset.pref.split('|'),i=D[id].who.indexOf(w);
     if(i>-1)D[id].who.splice(i,1);else D[id].who.push(w);
