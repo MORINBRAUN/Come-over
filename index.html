@@ -235,7 +235,7 @@ const PANTRY=['קמח','שמן ושמן זית','פפריקה, מלח ופלפל
 
 /* ======== state ======== */
 const HK='comeover-ob-last';
-const S={names:[],kosher:null,kWho:new Set(),kText:'בלי בשר וחלב יחד, בלי חזיר ופירות ים',txt:{},drop:{},menu:null,unmatched:[],open:null};
+const S={defaulted:false,names:[],kosher:null,kWho:new Set(),kText:'בלי בשר וחלב יחד, בלי חזיר ופירות ים',txt:{},drop:{},menu:null,unmatched:[],open:null};
 let step=0,dir='fwd';
 const $=id=>document.getElementById(id);
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -287,6 +287,11 @@ function suggest(){
     m.m=Math.max(0,idx);
     m.on=m.who.length>0;
   });
+  /* nobody wrote enough? then suggest a plain Friday dinner, so the screen is never empty */
+  const pop=id=>{const d=DISH[id],m=menu[id];S.names.forEach(n=>{if(!m.who.includes(n)&&!excluded(n,d))m.who.push(n)});m.on=m.who.length>0};
+  S.defaulted=CAT.filter(d=>menu[d.id].who.length).length<3;
+  if(S.defaulted)['schnitzel','pargit','rice','potato','chopped'].forEach(pop);
+  else S.names.forEach(n=>{if(!CAT.some(d=>menu[d.id].who.includes(n))){['schnitzel','rice'].forEach(id=>{const d=DISH[id],m=menu[id];if(!excluded(n,d)){m.who.push(n);m.on=true}})}});
   return menu}
 const dishWho=id=>{const m=S.menu[id];return m.who.length?m.who:S.names.filter(n=>!excluded(n,DISH[id]))};
 
@@ -327,9 +332,10 @@ function menu(){
     return `<div class="mrow${m.on?' on':''}"><button class="tog" data-tog="${d.id}" aria-label="${m.on?'להסיר':'להוסיף'} ${d.n}" aria-pressed="${m.on}"><span class="tick"></span></button>
      <button class="body" data-open="${d.id}" ${multi?'':'tabindex="-1"'}><b>${d.n}${served?'<span class="badge">הוגש בפעם הקודמת</span>':''}</b><span class="meta">${m.on?`${meth.n} · ${w.length} ${w.length===1?'איש':'אנשים'}`:(m.who.length?`${m.who.length} אוהבים`:'לא הוצע')}</span></button>
      <span class="go">${multi?'‹':''}</span></div>`}).join('')).join('');
+  const dn=S.defaulted?`<p class="note2">לא כתבת מספיק העדפות, אז הצעתי ארוחת שישי רגילה. אפשר לשנות כאן.</p>`:'';
   const un=S.unmatched.length?`<p class="note2">לא מצאתי מנה בשביל: ${[...new Set(S.unmatched.map(u=>`${u.item} (${u.n})`))].join(', ')}.</p>`:'';
   return `<h1>הצעה לתפריט</h1><p class="sub">סימנתי מראש לפי מה שהאורחים אוהבים${last?'. מה שהוגש בפעם הקודמת מסומן, ואפשר להחליף':''}. את רק משנה.</p>
-   ${rows}${un}<div class="spacer"></div><button class="cta" id="next" ${on?'':'disabled'}>הכיני לי את הארוחה (${on} מנות)</button>`}
+   ${dn}${rows}${un}<div class="spacer"></div><button class="cta" id="next" ${on?'':'disabled'}>הכיני לי את הארוחה (${on} מנות)</button>`}
 function methods(id){const d=DISH[id],m=S.menu[id],w=dishWho(id);
   return `<h1>איך מכינים ${d.n}?</h1><p class="sub">${w.length} ${w.length===1?'איש':'אנשים'}: ${w.join(', ')}. בחרי דרך אחת.</p>
   ${d.M.map((x,i)=>`<button class="meth" data-m="${i}" aria-pressed="${m.m===i}"><b>${x.n}</b><span class="facts"><span>⏱ ${x.t}</span><span>🫒 ${x.oil}</span><span>${x.lvl}</span>${x.fire?'<span>צריך גריל</span>':''}</span>${i===m.m&&sugReason(d,m,x)?`<span class="why">${sugReason(d,m,x)}</span>`:''}</button>`).join('')}
