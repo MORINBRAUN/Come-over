@@ -234,7 +234,7 @@ const GROUPS=['עיקריות','תוספות','סלטים'];
 const PANTRY=['קמח','שמן ושמן זית','פפריקה, מלח ופלפל'];
 
 /* ======== state ======== */
-const HK='comeover-ob-last';
+const HK='comeover-ob-last',PK1='comeover-plan-v1',PK2='comeover-meal-v1';
 const S={defaulted:false,names:[],kosher:null,kWho:new Set(),kText:'בלי בשר וחלב יחד, בלי חזיר ופירות ים',txt:{},drop:{},menu:null,unmatched:[],open:null};
 let step=0,dir='fwd';
 const $=id=>document.getElementById(id);
@@ -394,11 +394,17 @@ function render(){
     else if(step===2+n){sc.innerHTML='<div style="text-align:center"><div class="spin"></div><h1 style="font-size:24px">מכינה את הארוחה…</h1><p class="sub">שולחן, מתכונים וקניות</p></div>';sc.style.justifyContent='center';setTimeout(enterMeal,1100)}
     else go(step+1)};
 }
-function enterMeal(){$('phone').hidden=true;startMeal()}
+function savePlan(){try{localStorage.setItem(PK1,JSON.stringify({names:S.names,kosher:S.kosher,kWho:[...S.kWho],kText:S.kText,txt:S.txt,drop:Object.fromEntries(Object.entries(S.drop).map(([k,v])=>[k,[...v]])),menu:S.menu,unmatched:S.unmatched,defaulted:S.defaulted}))}catch(_){}}
+function clearPlan(){try{localStorage.removeItem(PK1);localStorage.removeItem(PK2)}catch(_){}}
+function enterMeal(){if(!S.restore){try{localStorage.removeItem(PK2)}catch(_){}}savePlan();$('phone').hidden=true;startMeal()}
 function leaveMeal(to){$('meal').hidden=true;$('phone').hidden=false;S.open=null;if(to===0){step=0}else{step=2+S.names.length}dir='back';render()}
 function go(i,d){dir=d||(i<step?'back':'fwd');step=i;S.open=null;render()}
 $('back').onclick=()=>{if(S.open){S.open=null;dir='back';render()}else go(step-1,'back')};
-render();
+/* reopening the app: go straight to the dinner that is already planned */
+(function(){try{const j=JSON.parse(localStorage.getItem(PK1)||'null');
+  if(j&&j.names&&j.names.length&&j.menu){Object.assign(S,j,{kWho:new Set(j.kWho||[]),drop:Object.fromEntries(Object.entries(j.drop||{}).map(([k,v])=>[k,new Set(v)])),open:null,restore:true});enterMeal();return}}
+  catch(_){S.restore=false;clearPlan();$('phone').hidden=false;if($('meal'))$('meal').hidden=true}
+  render()})();
 
 /* ======== meal screen ======== */
 function startMeal(){
@@ -564,7 +570,7 @@ function openPrefs(name){
    ${K.map(c=>`<h5>${c}</h5>`+byCat(c).map(([id,d])=>`<button class="item${d.who.includes(name)?' done':''}" data-pref="${id}|${name}"><span class="check"></span><span class="nm">${d.n}</span></button>`).join('')).join('')}
    <button class="cta2" data-close>סיום</button><button class="reset" data-reset>איפוס להצעה המקורית</button></div>`;
   sh.addEventListener('click',e=>{if(e.target===sh)sh.remove()});p.appendChild(sh)}
-function save(){}
+function save(){try{localStorage.setItem(PK2,JSON.stringify({who:Object.fromEntries(Object.entries(D).map(([i,d])=>[i,d.who])),gone:GONE,extra:EXTRA,done:[...DONE],notes:Object.fromEntries(Object.entries(INFO).map(([n,v])=>[n,v[1]]))}))}catch(_){}}
 function renderTable(){const e=stage.querySelector('#tbl');if(!e)return;if(SEL&&SEL.t==='p'&&GONE[SEL.id])SEL=null;e.innerHTML=tableHTML()}
 
 /* ---------- screen ---------- */
@@ -591,8 +597,9 @@ const screen = () => `<div class="phone v2">
    </section>
    <button class="cta" data-copy>העתיקי את הרשימה לוואטסאפ</button>
    <button class="cta alt" data-serve>הוגש! שמרי את הארוחה</button>
-   <button class="linkq" data-restart>להתחיל מחדש</button>
+   <button class="linkq" data-restart>ארוחה חדשה (מוחק את התכנון הזה)</button>
   </div></div>`;
+if(S.restore){try{const j=JSON.parse(localStorage.getItem(PK2)||'null');if(j){for(const i in j.who)if(D[i])D[i].who=j.who[i].filter(w=>GUESTS.includes(w));Object.assign(GONE,j.gone||{});EXTRA=(j.extra||[]).filter(x=>typeof x==='string');(j.done||[]).forEach(x=>DONE.add(x));for(const n in j.notes)if(INFO[n])INFO[n][1]=j.notes[n]}}catch(_){}S.restore=false}
 stage.innerHTML = screen();
 
 /* ---------- in-variant interactions ---------- */
@@ -607,7 +614,7 @@ stage.addEventListener('click',e=>{
   const t=e.target.closest('[data-check],[data-copy],[data-menu],[data-serve],[data-restart],[data-rm],[data-rmg],[data-addg],[data-seat],[data-dish],[data-xdel],[data-pref-open],[data-pref],[data-close],[data-reset],.v2 nav a');
   if(!t)return;
   if(t.hasAttribute('data-menu')){leaveMeal()}
-  else if(t.hasAttribute('data-restart')){S.names=[];S.menu=null;S.kosher=null;S.txt={};S.drop={};S.kWho=new Set();leaveMeal(0)}
+  else if(t.hasAttribute('data-restart')){S.names=[];S.menu=null;S.kosher=null;S.txt={};S.drop={};S.kWho=new Set();clearPlan();leaveMeal(0)}
   else if(t.hasAttribute('data-serve')){const ids=Object.keys(D).filter(i=>D[i].who.length);try{localStorage.setItem(HK,JSON.stringify({date:'2026-10-30',ids}))}catch(_){}t.disabled=true;t.textContent='✔ נשמר. בפעם הבאה לא אחזור על זה';toast('נשמר')}
   else if(t.dataset.xdel!==undefined){const n=EXTRA.splice(+t.dataset.xdel,1)[0];save();stage.querySelector('#shop').innerHTML=shopHTML();toast(`${n} נמחק`,()=>{EXTRA.push(n);save();stage.querySelector('#shop').innerHTML=shopHTML()})}
   else if(t.dataset.prefOpen){openPrefs(t.dataset.prefOpen)}
@@ -630,7 +637,7 @@ stage.addEventListener('click',e=>{
     const [id,w]=t.dataset.rm.split('|'),i=D[id].who.indexOf(w);
     D[id].who.splice(i,1);setWho(id);
     toast(`${w} ירד מ${D[id].n}`,()=>{D[id].who.splice(i,0,w);setWho(id)});
-  } else if(t.hasAttribute('data-check')){const n=t.dataset.name;DONE.has(n)?DONE.delete(n):DONE.add(n);t.classList.toggle('done')}
+  } else if(t.hasAttribute('data-check')){const n=t.dataset.name;DONE.has(n)?DONE.delete(n):DONE.add(n);t.classList.toggle('done');save()}
   else if(t.hasAttribute('data-copy')){
     const txt='רשימת קניות לשישי\n'+[B,V,Y].map(g=>g+':\n'+Object.values(need()).filter(i=>i.g===g).map(i=>`- ${i.n} (${fmtQ(i.v,i.u)})`).join('\n')).join('\n')+(EXTRA.length?'\nעוד:\n'+EXTRA.map(n=>`- ${n}`).join('\n'):'');
     (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('הועתק!'),()=>toast('אי אפשר להעתיק כאן'));
