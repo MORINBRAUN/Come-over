@@ -70,6 +70,17 @@ a.cta{display:block;text-align:center;text-decoration:none}
 .otoast{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);background:#2a211b;color:#fff;padding:9px 16px;border-radius:99px;font-size:13px;white-space:nowrap;animation:in 200ms var(--ease) both}
 
 [hidden]{display:none!important}
+#home{width:390px;max-width:100%;display:flex;justify-content:center}#home .phone{width:100%}
+.homein{flex:1;overflow-y:auto;padding:12px 24px 28px}
+.homein h1{font-size:34px;margin:10px 0 4px}
+.homein .cta{margin-top:6px}
+.mcard{position:relative;display:flex;align-items:center;background:var(--paper);border:1.5px solid var(--line);border-radius:18px;margin-bottom:10px;transition:border-color 150ms ease-out}
+.mcard:active{transform:scale(.99)}
+.mbody{flex:1;text-align:right;padding:14px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.mbody b{font-size:18px}.mbody span{font-size:14px;color:var(--ink)}.mbody .mu{font-size:12px;color:var(--muted)}
+.mgo{font-size:14px;font-weight:700;color:var(--accent);padding:0 6px}
+.mdel{width:48px;align-self:stretch;font-size:18px;color:var(--muted);border-right:1px solid var(--line)}
+.mdel:active{transform:scale(.92)}
 
 .spin{width:44px;height:44px;border-radius:50%;border:4px solid #efe5d6;border-top-color:var(--accent);animation:sp 800ms linear infinite;margin:40px auto 18px}@keyframes sp{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.spin{animation-duration:2.4s}}
@@ -137,6 +148,7 @@ details[open] .arr{transform:rotate(180deg)}
 .v2 .tcard .note{background:var(--green-soft);color:#2f5a38;border-radius:10px;padding:7px 10px;font-size:13px;margin:8px 0 2px}.v2 .tcard .note.warn{background:#fdecc8;color:#7a5200}
 .v2 .tcard .pd{padding:7px 0;border-bottom:1px solid var(--line);font-size:16px}.v2 .tcard .pd:last-child{border:0}
 .v2 .tcard .hint{color:var(--muted);font-size:14px;text-align:center;padding:22px 0}
+.v2 .navrow{display:flex;justify-content:space-between;align-items:center}
 .v2 .row.hide{display:none}
 .v2 .editrow{display:grid;grid-template-columns:1fr 110px;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
 .v2 .editrow input{min-width:0;font:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink)}
@@ -188,11 +200,12 @@ details[open] .arr{transform:rotate(180deg)}
 </style>
 </head>
 <body>
-<div class="phone" id="phone">
+<div class="phone" id="phone" hidden>
   <div class="status"><span>9:41</span><span></span></div>
   <div class="top"><button class="back" id="back" aria-label="חזרה" hidden>→</button><div class="bar" role="progressbar" aria-label="התקדמות"><i id="prog"></i></div><span class="cnt" id="cnt"></span></div>
   <div class="stage" id="stage"></div>
 </div>
+<div id="home" hidden><div class="phone home"></div></div>
 <div id="meal" hidden></div>
 
 <script>
@@ -387,7 +400,7 @@ function render(){
   const sc=document.createElement('section');sc.className='screen'+(dir==='back'?' back-in':'');sc.innerHTML=view(step);
   stage.innerHTML='';stage.appendChild(sc);
   const sub=step===2+n&&S.open;
-  $('back').hidden=step===0;
+  $('back').hidden=false;
   $('prog').style.width=Math.min(100,(step/(t-1))*100)+'%';
   $('cnt').textContent=`${step+1}/${t}`;
   const nx=$('next');
@@ -415,17 +428,38 @@ function render(){
     else if(step===2+n){sc.innerHTML='<div style="text-align:center"><div class="spin"></div><h1 style="font-size:24px">מכינה את הארוחה…</h1><p class="sub">שולחן, מתכונים וקניות</p></div>';sc.style.justifyContent='center';setTimeout(enterMeal,1100)}
     else go(step+1)};
 }
-function savePlan(){try{localStorage.setItem(PK1,JSON.stringify({names:S.names,kosher:S.kosher,kWho:[...S.kWho],kText:S.kText,txt:S.txt,drop:Object.fromEntries(Object.entries(S.drop).map(([k,v])=>[k,[...v]])),menu:S.menu,unmatched:S.unmatched,defaulted:S.defaulted}))}catch(_){}}
-function clearPlan(){try{localStorage.removeItem(PK1);localStorage.removeItem(PK2)}catch(_){}}
-function enterMeal(){if(!S.restore){try{localStorage.removeItem(PK2)}catch(_){}}savePlan();$('phone').hidden=true;startMeal()}
+const MK='comeover-meals-v1';let CUR=null;
+const loadMeals=()=>{try{return JSON.parse(localStorage.getItem(MK)||'null')||{list:[]}}catch(_){return {list:[]}}};
+const storeMeals=m=>{try{localStorage.setItem(MK,JSON.stringify(m))}catch(_){}};
+const mealTitle=()=>'ארוחה '+new Date().toLocaleDateString('he-IL',{day:'numeric',month:'numeric'});
+const snapshot=()=>({names:S.names,kosher:S.kosher,kWho:[...S.kWho],kText:S.kText,txt:S.txt,drop:Object.fromEntries(Object.entries(S.drop).map(([k,v])=>[k,[...v]])),menu:S.menu,unmatched:S.unmatched,defaulted:S.defaulted});
+/* a dinner planned before the list existed becomes the first meal in it */
+function migrateOld(){const m=loadMeals();if(m.list.length||m.migrated)return;try{const p=JSON.parse(localStorage.getItem(PK1)||'null');if(p&&p.names&&p.names.length&&p.menu){m.list.push({id:'m'+Date.now(),title:mealTitle(),created:Date.now(),updated:Date.now(),plan:p,mealState:JSON.parse(localStorage.getItem(PK2)||'null')})}}catch(_){}m.migrated=1;storeMeals(m)}
+function savePlan(){const m=loadMeals();if(!CUR)CUR='m'+Date.now();let e=m.list.find(x=>x.id===CUR);if(!e){e={id:CUR,title:mealTitle(),created:Date.now()};m.list.unshift(e)}e.plan=snapshot();e.updated=Date.now();if(!S.restore)e.mealState=null;storeMeals(m)}
+function saveMealState(st){const m=loadMeals(),e=m.list.find(x=>x.id===CUR);if(e){e.mealState=st;e.updated=Date.now();storeMeals(m)}}
+function enterMeal(){savePlan();$('home').hidden=true;$('phone').hidden=true;startMeal()}
+/* ---- home: continue a planned meal or start a new one ---- */
+const fmtWhen=t=>new Date(t).toLocaleString('he-IL',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'});
+function homeHTML(){const m=loadMeals();
+  return `<div class="status"><span>9:41</span><span></span></div><div class="homein"><h1>Come Over</h1><p class="sub">ארוחה משפחתית בלי כאב ראש.</p>
+  <button class="cta" data-new>＋ ארוחה חדשה</button>
+  ${m.list.length?`<p class="mg">הארוחות שלי</p>`+m.list.map(e=>{const p=e.plan||{},n=(p.names||[]).length,d=p.menu?Object.values(p.menu).filter(x=>x.on).length:0;
+    return `<div class="mcard"><button class="mbody" data-cont="${e.id}"><b>${esc(e.title)}</b><span>${n} אנשים · ${d} מנות</span><span class="mu">עודכן ${fmtWhen(e.updated||e.created)}</span></button><span class="mgo" aria-hidden="true">המשך ‹</span><button class="mdel" data-mdel="${e.id}" aria-label="מחיקת ${esc(e.title)}">🗑</button></div>`}).join(''):'<p class="sub" style="margin-top:24px">עוד אין ארוחות. התחילי ארוחה חדשה, ואני אזכור אותה כאן.</p>'}
+  </div>`}
+function showHome(){$('phone').hidden=true;$('meal').hidden=true;const h=$('home');h.hidden=false;h.querySelector('.phone').innerHTML=homeHTML()}
+function newMeal(){Object.assign(S,{names:[],kosher:null,kWho:new Set(),kText:'בלי בשר וחלב יחד, בלי חזיר ופירות ים',txt:{},drop:{},menu:null,unmatched:[],open:null,defaulted:false,restore:false});CUR=null;$('home').hidden=true;$('phone').hidden=false;step=0;dir='fwd';render()}
+function continueMeal(id){const e=loadMeals().list.find(x=>x.id===id);if(!e||!e.plan)return;const j=e.plan;
+  Object.assign(S,j,{kWho:new Set(j.kWho||[]),drop:Object.fromEntries(Object.entries(j.drop||{}).map(([k,v])=>[k,new Set(v)])),open:null,restore:true});CUR=id;enterMeal()}
+function homeToast(msg,undo){const p=$('home').querySelector('.phone');p.querySelector('.otoast')?.remove();const t=document.createElement('div');t.className='otoast';t.textContent=msg;if(undo){const b=document.createElement('button');b.textContent='ביטול';b.style.cssText='margin-right:12px;color:#f3b79e;font-weight:700';b.onclick=()=>{undo();t.remove()};t.appendChild(b)}p.appendChild(t);setTimeout(()=>t.remove(),4000)}
+function deleteMeal(id){const m=loadMeals(),i=m.list.findIndex(x=>x.id===id);if(i<0)return;const [e]=m.list.splice(i,1);storeMeals(m);showHome();
+  homeToast('הארוחה נמחקה',()=>{const m2=loadMeals();m2.list.splice(Math.min(i,m2.list.length),0,e);storeMeals(m2);showHome()})}
+document.getElementById('home').addEventListener('click',e=>{const t=e.target.closest('[data-new],[data-cont],[data-mdel]');if(!t)return;
+  if(t.hasAttribute('data-new'))newMeal();else if(t.dataset.cont)continueMeal(t.dataset.cont);else if(t.dataset.mdel)deleteMeal(t.dataset.mdel)});
 function leaveMeal(to){$('meal').hidden=true;$('phone').hidden=false;S.open=null;if(to===0){step=0}else{step=2+S.names.length}dir='back';render()}
 function go(i,d){dir=d||(i<step?'back':'fwd');step=i;S.open=null;render()}
-$('back').onclick=()=>{if(S.open){S.open=null;dir='back';render()}else go(step-1,'back')};
-/* reopening the app: go straight to the dinner that is already planned */
-(function(){try{const j=JSON.parse(localStorage.getItem(PK1)||'null');
-  if(j&&j.names&&j.names.length&&j.menu){Object.assign(S,j,{kWho:new Set(j.kWho||[]),drop:Object.fromEntries(Object.entries(j.drop||{}).map(([k,v])=>[k,new Set(v)])),open:null,restore:true});enterMeal();return}}
-  catch(_){S.restore=false;clearPlan();$('phone').hidden=false;if($('meal'))$('meal').hidden=true}
-  render()})();
+$('back').onclick=()=>{if(S.open){S.open=null;dir='back';render()}else if(step===0)showHome();else go(step-1,'back')};
+/* opening the app: the home screen (continue a planned meal, or start a new one) */
+migrateOld();showHome();
 
 /* ======== meal screen ======== */
 function startMeal(){
@@ -602,7 +636,7 @@ function openPrefs(name){
    ${K.map(c=>`<h5>${c}</h5>`+byCat(c).map(([id,d])=>`<button class="item${d.who.includes(name)?' done':''}" data-pref="${id}|${name}"><span class="check"></span><span class="nm">${d.n}</span></button>`).join('')).join('')}
    <button class="cta2" data-close>סיום</button><button class="reset" data-reset>איפוס להצעה המקורית</button></div>`;
   sh.addEventListener('click',e=>{if(e.target===sh)sh.remove()});p.appendChild(sh)}
-function save(){try{localStorage.setItem(PK2,JSON.stringify({who:Object.fromEntries(Object.entries(D).map(([i,d])=>[i,d.who])),gone:GONE,extra:EXTRA,done:[...DONE],edit:EDIT,notes:Object.fromEntries(Object.entries(INFO).map(([n,v])=>[n,v[1]]))}))}catch(_){}}
+function save(){saveMealState({who:Object.fromEntries(Object.entries(D).map(([i,d])=>[i,d.who])),gone:GONE,extra:EXTRA,done:[...DONE],edit:EDIT,notes:Object.fromEntries(Object.entries(INFO).map(([n,v])=>[n,v[1]]))})}
 function renderTable(){const e=stage.querySelector('#tbl');if(!e)return;if(SEL&&SEL.t==='p'&&GONE[SEL.id])SEL=null;e.innerHTML=tableHTML()}
 
 /* ---------- screen ---------- */
@@ -611,7 +645,7 @@ const old=document.getElementById('meal'),stage=old.cloneNode(false);old.replace
 const screen = () => `<div class="phone v2">
   <div class="scroll" id="sc">
    <div class="hero">${bar('').replace('class="status"','class="status" style="padding:0;color:#cbbdae"')}
-     <button class="backmenu" data-menu>‹ לשינוי התפריט</button>
+     <div class="navrow"><button class="backmenu" data-home>‹ לכל הארוחות</button><button class="backmenu" data-menu>לשינוי התפריט</button></div>
      <small>COME OVER · שישי 30.10</small>
      <h1 class="enter">ארוחת<br>שישי</h1>
      <p id="heroP">${heroP()}</p></div>
@@ -626,10 +660,10 @@ const screen = () => `<div class="phone v2">
      <form class="addform" data-add><input name="x" type="text" dir="auto" enterkeyhint="done" autocomplete="off" placeholder="להוסיף לרשימה (למשל: מפיות, 2 בקבוקי קולה)" aria-label="להוסיף פריט לרשימת הקניות"><button type="submit">הוספה</button></form>
       <button class="cta" data-copy>העתיקי את הרשימה לוואטסאפ</button>
    <button class="cta alt" data-serve>הוגש! שמרי את הארוחה</button>
-   <button class="linkq" data-restart>ארוחה חדשה (מוחק את התכנון הזה)</button>
+   <button class="linkq" data-home>‹ לכל הארוחות</button>
    </section>
   </div></div>`;
-if(S.restore){try{const j=JSON.parse(localStorage.getItem(PK2)||'null');if(j){for(const i in j.who)if(D[i])D[i].who=j.who[i].filter(w=>GUESTS.includes(w));Object.assign(GONE,j.gone||{});EXTRA=(j.extra||[]).filter(x=>typeof x==='string');(j.done||[]).forEach(x=>DONE.add(x));Object.assign(EDIT,j.edit||{});for(const n in j.notes)if(INFO[n])INFO[n][1]=j.notes[n]}}catch(_){}S.restore=false}
+if(S.restore){try{const e0=loadMeals().list.find(x=>x.id===CUR),j=e0&&e0.mealState;if(j){for(const i in j.who)if(D[i])D[i].who=j.who[i].filter(w=>GUESTS.includes(w));Object.assign(GONE,j.gone||{});EXTRA=(j.extra||[]).filter(x=>typeof x==='string');(j.done||[]).forEach(x=>DONE.add(x));Object.assign(EDIT,j.edit||{});for(const n in j.notes)if(INFO[n])INFO[n][1]=j.notes[n]}}catch(_){}S.restore=false}
 stage.innerHTML = screen();
 
 /* ---------- in-variant interactions ---------- */
@@ -656,7 +690,7 @@ stage.addEventListener('submit',e=>{e.preventDefault();
 stage.addEventListener('input',e=>{if(e.target.dataset.note){INFO[e.target.dataset.note][1]=e.target.value;save()}});
 stage.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.closest('[data-seat],[data-dish]')){e.preventDefault();e.target.closest('[data-seat],[data-dish]').dispatchEvent(new MouseEvent('click',{bubbles:true}))}});
 stage.addEventListener('click',e=>{
-  const t=e.target.closest('[data-edit],[data-editcancel],[data-editdel],[data-tab],[data-check],[data-copy],[data-menu],[data-serve],[data-restart],[data-rm],[data-rmg],[data-addg],[data-seat],[data-dish],[data-xdel],[data-pref-open],[data-pref],[data-close],[data-reset],.v2 nav a');
+  const t=e.target.closest('[data-edit],[data-editcancel],[data-editdel],[data-tab],[data-check],[data-copy],[data-home],[data-menu],[data-serve],[data-restart],[data-rm],[data-rmg],[data-addg],[data-seat],[data-dish],[data-xdel],[data-pref-open],[data-pref],[data-close],[data-reset],.v2 nav a');
   if(!t)return;
   if(t.dataset.edit!==undefined){EDITING=t.dataset.edit;stage.querySelector('#shop').innerHTML=shopHTML();stage.querySelector('.editrow input')?.focus({preventScroll:true})}
   else if(t.hasAttribute('data-editcancel')){EDITING=null;stage.querySelector('#shop').innerHTML=shopHTML()}
@@ -664,6 +698,7 @@ stage.addEventListener('click',e=>{
     if(k.startsWith('x|')){const i=+k.slice(2),n=EXTRA.splice(i,1)[0];EDITING=null;save();stage.querySelector('#shop').innerHTML=shopHTML();toast(`${n} הוסר`,()=>{EXTRA.splice(i,0,n);save();stage.querySelector('#shop').innerHTML=shopHTML()})}
     else{EDIT[k]={...(prev||{}),del:1};EDITING=null;save();stage.querySelector('#shop').innerHTML=shopHTML();toast('הוסר מהרשימה',()=>{if(prev)EDIT[k]=prev;else delete EDIT[k];save();stage.querySelector('#shop').innerHTML=shopHTML()})}}
   else if(t.dataset.tab){showTab(t.dataset.tab)}
+  else if(t.hasAttribute('data-home')){showHome()}
   else if(t.hasAttribute('data-menu')){leaveMeal()}
   else if(t.hasAttribute('data-restart')){S.names=[];S.menu=null;S.kosher=null;S.txt={};S.drop={};S.kWho=new Set();clearPlan();leaveMeal(0)}
   else if(t.hasAttribute('data-serve')){const ids=Object.keys(D).filter(i=>D[i].who.length);try{localStorage.setItem(HK,JSON.stringify({date:'2026-10-30',ids}))}catch(_){}t.disabled=true;t.textContent='✔ נשמר. בפעם הבאה לא אחזור על זה';toast('נשמר')}
