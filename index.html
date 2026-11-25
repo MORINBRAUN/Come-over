@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Come Over: אונבורדינג</title>
 <style>
-:root{--cream:#fbf5ec;--paper:#fffdf9;--ink:#2a211b;--muted:#7d6e62;--line:#eadfce;--accent:#d1572f;--accent-soft:#fbe3d8;--green:#4f7a58;--green-soft:#e2eede;--ease:cubic-bezier(0.23,1,0.32,1)}
+:root{--cream:#fbf5ec;--paper:#fffdf9;--ink:#2a211b;--muted:#7d6e62;--line:#eadfce;--accent:#d1572f;--accent-soft:#fbe3d8;--green:#4f7a58;--green-soft:#e2eede;--ease:cubic-bezier(0.23,1,0.32,1);--dx:-24px}
+:root[dir=ltr]{--dx:24px}
 *{box-sizing:border-box;margin:0}
 html,body{background:#e9e4dc;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Heebo","Arial Hebrew",Arial,sans-serif;color:var(--ink)}
 body{min-height:100vh;display:flex;justify-content:center;padding:16px 0}
@@ -16,12 +17,12 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 .top{flex:none;display:flex;align-items:center;gap:12px;padding:4px 16px 8px}
 .back{width:40px;height:40px;border-radius:50%;font-size:20px;color:var(--muted);transition:transform 120ms ease-out}.back:active{transform:scale(.92)}.back[hidden]{visibility:hidden;display:block!important}
 .bar{flex:1;height:6px;background:#efe5d6;border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent);border-radius:9px;transition:width 300ms var(--ease)}
-.cnt{font-size:12px;color:var(--muted);min-width:44px;text-align:left;font-variant-numeric:tabular-nums}
+.cnt{font-size:12px;color:var(--muted);min-width:44px;text-align:end;font-variant-numeric:tabular-nums}
 .stage{flex:1;position:relative;overflow:hidden}
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;padding:12px 24px 20px;overflow-y:auto;animation:in 300ms var(--ease) both}
 .screen.back-in{animation-name:inback}
-@keyframes in{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:none}}
-@keyframes inback{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+@keyframes in{from{opacity:0;transform:translateX(var(--dx))}to{opacity:1;transform:none}}
+@keyframes inback{from{opacity:0;transform:translateX(calc(var(--dx)*-1))}to{opacity:1;transform:none}}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
 @media (prefers-reduced-motion:reduce){.screen{animation:none}.bar i{transition:none}.mic.rec{animation:none}*{transition:none!important}}
 h1{font-size:28px;line-height:1.2;margin:8px 0 6px}
@@ -29,11 +30,11 @@ h1{font-size:28px;line-height:1.2;margin:8px 0 6px}
 textarea,input[type=text]{width:100%;font:inherit;font-size:17px;line-height:1.5;border:1.5px solid var(--line);border-radius:16px;padding:14px;background:var(--paper);color:var(--ink);resize:none}
 textarea:focus,input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
 .tawrap{position:relative}.tawrap textarea{padding-bottom:52px}
-.mic{position:absolute;bottom:10px;left:10px;width:44px;height:44px;border-radius:50%;background:var(--accent-soft);font-size:20px;display:grid;place-items:center;transition:background 150ms ease-out,transform 120ms ease-out}
+.mic{position:absolute;bottom:10px;inset-inline-end:10px;width:44px;height:44px;border-radius:50%;background:var(--accent-soft);font-size:20px;display:grid;place-items:center;transition:background 150ms ease-out,transform 120ms ease-out}
 .mic:active{transform:scale(.92)}.mic.rec{background:var(--accent);animation:pulse 1s ease-in-out infinite}
 .micmsg{font-size:13px;color:#9a3a18;min-height:18px;margin-top:6px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.chip{display:inline-flex;align-items:center;gap:4px;padding:6px 8px 6px 12px;border-radius:99px;background:#efe5d6;font-size:14px;transition:background 150ms ease-out}
+.chip{display:inline-flex;align-items:center;gap:4px;padding-block:6px;padding-inline:8px 12px;border-radius:99px;background:#efe5d6;font-size:14px;transition:background 150ms ease-out}
 .chip button{width:24px;height:24px;border-radius:50%;color:var(--muted);font-size:16px;line-height:1}
 .chip.sel{background:var(--accent-soft);color:#9a3a18;padding:9px 14px;font-weight:600}
 .chip.pick{padding:9px 14px;font-size:15px}.chip.pick:active{transform:scale(.96)}
@@ -44,7 +45,7 @@ textarea:focus,input:focus{outline:2px solid var(--accent);outline-offset:1px;bo
 .cta:active{transform:scale(.98)}.cta:disabled{opacity:.4}
 .link{display:block;margin:12px auto 0;font-size:14px;color:var(--muted);text-decoration:underline;padding:8px;flex:none}
 .big{display:flex;flex-direction:column;gap:10px}
-.opt{display:flex;align-items:center;gap:12px;text-align:right;background:var(--paper);border:1.5px solid var(--line);border-radius:18px;padding:16px;font-size:17px;transition:border-color 150ms ease-out,background 150ms ease-out}
+.opt{display:flex;align-items:center;gap:12px;text-align:start;background:var(--paper);border:1.5px solid var(--line);border-radius:18px;padding:16px;font-size:17px;transition:border-color 150ms ease-out,background 150ms ease-out}
 .opt:active{transform:scale(.99)}.opt[aria-pressed=true]{border-color:var(--accent);background:var(--accent-soft)}
 .emoji{font-size:26px}
 .who{display:flex;align-items:center;gap:12px;margin-bottom:6px}.av{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-size:24px;font-weight:700;background:var(--accent-soft);color:#9a3a18}
@@ -55,14 +56,14 @@ textarea:focus,input:focus{outline:2px solid var(--accent);outline-offset:1px;bo
 .mrow .tog{width:52px;height:56px;flex:none;display:grid;place-items:center}
 .mrow .tick{width:24px;height:24px;border-radius:50%;border:2px solid #cdbda7;display:grid;place-items:center;transition:background 150ms ease-out,border-color 150ms ease-out}
 .mrow.on .tick{background:var(--accent);border-color:var(--accent)}.mrow.on .tick::after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(40deg) translate(-1px,-1px)}
-.mrow .body{flex:1;text-align:right;padding:10px 0;min-height:56px;display:flex;flex-direction:column;justify-content:center}
+.mrow .body{flex:1;text-align:start;padding:10px 0;min-height:56px;display:flex;flex-direction:column;justify-content:center}
 .mrow b{font-size:17px}.mrow .meta{font-size:13px;color:var(--muted);margin-top:2px}
 .mrow:not(.on) b{color:var(--muted)}
 .mrow .go{width:40px;font-size:18px;color:var(--muted);flex:none;text-align:center}
-.badge{display:inline-block;font-size:11px;background:#efe5d6;color:var(--muted);border-radius:99px;padding:1px 8px;margin-right:6px;font-weight:600}
+.badge{display:inline-block;font-size:11px;background:#efe5d6;color:var(--muted);border-radius:99px;padding:1px 8px;margin-inline-start:6px;font-weight:600}
 .note2{background:#fdecc8;color:#7a5200;border-radius:12px;padding:9px 12px;font-size:13px;margin-top:10px}
 /* method screen */
-.meth{display:flex;flex-direction:column;gap:6px;text-align:right;background:var(--paper);border:1.5px solid var(--line);border-radius:18px;padding:14px 16px;margin-bottom:10px;transition:border-color 150ms ease-out,background 150ms ease-out}
+.meth{display:flex;flex-direction:column;gap:6px;text-align:start;background:var(--paper);border:1.5px solid var(--line);border-radius:18px;padding:14px 16px;margin-bottom:10px;transition:border-color 150ms ease-out,background 150ms ease-out}
 .meth:active{transform:scale(.99)}.meth[aria-pressed=true]{border-color:var(--accent);background:var(--accent-soft)}
 .meth b{font-size:18px}.meth .facts{display:flex;gap:6px;flex-wrap:wrap}.meth .facts span{font-size:12px;background:#efe5d6;border-radius:99px;padding:2px 9px;color:#4a3d33}
 .meth .why{font-size:13px;color:#2f5a38}
@@ -76,10 +77,10 @@ a.cta{display:block;text-align:center;text-decoration:none}
 .homein .cta{margin-top:6px}
 .mcard{position:relative;display:flex;align-items:center;background:var(--paper);border:1.5px solid var(--line);border-radius:18px;margin-bottom:10px;transition:border-color 150ms ease-out}
 .mcard:active{transform:scale(.99)}
-.mbody{flex:1;text-align:right;padding:14px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.mbody{flex:1;text-align:start;padding:14px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
 .mbody b{font-size:18px}.mbody span{font-size:14px;color:var(--ink)}.mbody .mu{font-size:12px;color:var(--muted)}
 .mgo{font-size:14px;font-weight:700;color:var(--accent);padding:0 6px}
-.mdel{width:48px;align-self:stretch;font-size:18px;color:var(--muted);border-right:1px solid var(--line)}
+.mdel{width:48px;align-self:stretch;font-size:18px;color:var(--muted);border-inline-start:1px solid var(--line)}
 .mdel:active{transform:scale(.92)}
 
 .spin{width:44px;height:44px;border-radius:50%;border:4px solid #efe5d6;border-top-color:var(--accent);animation:sp 800ms linear infinite;margin:40px auto 18px}@keyframes sp{to{transform:rotate(360deg)}}
@@ -103,7 +104,7 @@ a.cta{display:block;text-align:center;text-decoration:none}
 .item.done .check{background:var(--green);border-color:var(--green)}
 .item.done .check::after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(40deg) translate(-1px,-1px)}
 .item.done .nm{text-decoration:line-through;color:var(--muted)}
-.item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);width:100%;text-align:right}
+.item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);width:100%;text-align:start}
 .item:active{transform:scale(.99)}
 .item .nm{flex:1}.item .q{font-size:13px;color:var(--muted)}
 details>summary{list-style:none;cursor:pointer}
@@ -132,7 +133,7 @@ details[open] .arr{transform:rotate(180deg)}
 .v2 .row{padding:12px 0;border-bottom:1px solid var(--line)}
 .v2 .row b{font-size:17px}.v2 .row p.meta:empty{display:none}.v2 .row p{font-size:13px;color:var(--muted);margin-top:2px}
 .v2 .who{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
-.v2 .pill{display:inline-flex;align-items:center;gap:2px;background:var(--accent-soft);color:#9a3a18;border-radius:99px;font-size:13px;padding:2px 4px 2px 11px;animation:rise 200ms var(--ease) both}
+.v2 .pill{display:inline-flex;align-items:center;gap:2px;background:var(--accent-soft);color:#9a3a18;border-radius:99px;font-size:13px;padding-block:2px;padding-inline:4px 11px;animation:rise 200ms var(--ease) both}
 .v2 .pill button{width:28px;height:28px;border-radius:50%;font-size:17px;line-height:1;color:#9a3a18;transition:background 120ms ease-out,transform 120ms ease-out}
 .v2 .pill button:active{background:rgba(154,58,24,.18);transform:scale(.9)}
 .v2 .counts{display:flex;gap:6px;margin-bottom:6px}.v2 .counts div{flex:1;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:8px 2px;text-align:center;font-size:12px;color:var(--muted)}.v2 .counts b{display:block;font-size:22px;color:var(--ink);font-variant-numeric:tabular-nums}
@@ -165,7 +166,7 @@ details[open] .arr{transform:rotate(180deg)}
 .v2 .xrow{display:flex;align-items:center}.v2 .xrow .item{flex:1}.v2 .xdel{width:44px;height:44px;font-size:22px;color:var(--muted);flex:none}.v2 .xdel:active{transform:scale(.9)}
 .v2 .addform{display:flex;gap:8px;margin-top:14px}.v2 .addform input{flex:1;min-width:0;font:inherit;font-size:16px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink)}.v2 .addform input:focus{outline:2px solid var(--accent);outline-offset:1px}
 .v2 .addform button{background:var(--ink);color:#fff;font-weight:600;padding:0 16px;border-radius:14px;transition:transform 120ms ease-out}.v2 .addform button:active{transform:scale(.97)}
-.v2 .pill .pn{padding:4px 2px 4px 6px;font-size:13px;color:inherit;min-height:28px}
+.v2 .pill .pn{width:auto;padding-block:4px;padding-inline:2px 6px;font-size:13px;color:inherit;min-height:28px}
 .v2 .editpref{margin:8px 0 2px;font-size:13px;font-weight:600;color:var(--accent);padding:7px 12px;border:1px solid var(--accent);border-radius:99px;transition:transform 120ms ease-out}.v2 .editpref:active{transform:scale(.97)}
 .v2 .sheet{position:absolute;inset:0;z-index:20;background:rgba(0,0,0,.35);display:flex;align-items:flex-end;animation:fade 200ms ease-out both}
 @keyframes fade{from{opacity:0}to{opacity:1}}
@@ -179,14 +180,14 @@ details[open] .arr{transform:rotate(180deg)}
 @media (prefers-reduced-motion:reduce){.v2 .sheet,.v2 .sheet-in{animation:none}}
 .v2 .pill.gone{background:#efe5d6;color:var(--muted);text-decoration:line-through}.v2 .pill.gone button{text-decoration:none;color:var(--green)}
 .v2 .empty-who{font-size:13px;color:var(--muted)}
-.toast button{margin-right:12px;color:#f3b79e;font-weight:700}
+.toast button{margin-inline-start:12px;color:#f3b79e;font-weight:700}
 .v2 .rec{margin-bottom:22px}.v2 .rec h4{font-size:19px;margin-bottom:6px}
 .v2 .rec h6{font-size:12px;color:var(--accent);margin:12px 0 4px;letter-spacing:.06em}.v2 .rec .rm{font-size:13px;color:var(--muted)}
 .v2 .need{list-style:none;padding:0;background:var(--paper);border:1px solid var(--line);border-radius:12px}.v2 .need li{display:flex;justify-content:space-between;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line);font-size:15px}.v2 .need li:last-child{border:0}.v2 .need b{color:var(--ink)}
 .v2 .rec .eq{font-size:14px;color:#4a3d33}.v2 .done-line{background:var(--green-soft);color:#2f5a38;border-radius:10px;padding:8px 12px;font-size:14px;margin-top:8px}
 .v2 .vid{display:inline-block;margin-top:10px;font-size:14px;font-weight:600;color:var(--accent);text-decoration:none;padding:9px 14px;border:1px solid var(--accent);border-radius:99px}.v2 .vid:active{transform:scale(.97)}
 .v2 .rec{padding-bottom:18px;border-bottom:1px solid var(--line)}
-.v2 .rec ol{padding-right:20px;font-size:15px;line-height:1.6;color:#4a3d33}
+.v2 .rec ol{padding-inline-start:20px;font-size:15px;line-height:1.6;color:#4a3d33}
 .v2 .rec ol li{margin-bottom:3px}
 .v2 .cta{margin:18px 24px 0;width:calc(100% - 48px);background:var(--accent);color:#fff;padding:14px;border-radius:16px;font-weight:700;font-size:16px;transition:transform 120ms ease-out}
 .v2 .cta:active{transform:scale(.97)}
@@ -197,6 +198,8 @@ details[open] .arr{transform:rotate(180deg)}
 .v2 .cta.alt{background:var(--ink);margin-top:10px}
 .v2 .cta.alt:disabled{opacity:.5}
 .v2 .linkq{display:block;margin:14px auto 22px;font-size:13px;color:var(--muted);text-decoration:underline;padding:8px}
+.langrow{display:flex;justify-content:flex-end;margin:2px 0 0}
+.langsw{font-size:13px;font-weight:700;color:var(--accent);padding:8px 14px;min-height:36px;border-radius:99px;background:var(--accent-soft);transition:transform 120ms ease-out}.langsw:active{transform:scale(.96)}
 </style>
 </head>
 <body>
@@ -209,9 +212,197 @@ details[open] .arr{transform:rotate(180deg)}
 <div id="meal" hidden></div>
 
 <script>
+/* ======== language: Hebrew (default, right-to-left) or English (left-to-right) ======== */
+/* Chosen by ?lang=en / ?lang=he in the link (and remembered), else by the toggle on the home screen. */
+const LANG=(()=>{try{
+  const q=new URLSearchParams(location.search).get('lang');
+  if(q==='en'||q==='he'){try{localStorage.setItem('comeover-lang',q)}catch(e){}return q}
+  const s=localStorage.getItem('comeover-lang');if(s==='en'||s==='he')return s
+}catch(e){}return 'he'})();
+const IS_HE=LANG==='he';
+const LOC=IS_HE?'he-IL':(/^en/i.test(navigator.language||'')?navigator.language:'en-US');
+const SPEECH=IS_HE?'he-IL':'en-US';
+const SFX=IS_HE?'':'-en';                       /* English meals are stored separately from Hebrew ones */
+const DATEOPT=IS_HE?{day:'numeric',month:'numeric'}:{month:'short',day:'numeric'};
+const WHENOPT=IS_HE?{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'}:{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'};
+document.documentElement.lang=LANG;document.documentElement.dir=IS_HE?'rtl':'ltr';
+/* Every screen text is written in Hebrew in the code and looked up here for English (key = the Hebrew text).
+   {0} {1} are filled in; {0:person|people} picks singular or plural by the number. */
+const EN={
+ 'Come Over: אונבורדינג':'Come Over: Plan a dinner',
+ '→':'←',
+ 'חזרה':'Back',
+ 'התקדמות':'Progress',
+ 'בלי בשר וחלב יחד, בלי חזיר ופירות ים':'No meat with dairy, no pork or shellfish',
+ 'הכתבה בקול':'Dictate',
+ 'מי מגיע?':'Who\'s coming?',
+ 'כתבי או דברי, רק שמות. אפשר להוסיף אחר כך.':'Type or dictate, names only. You can add more later.',
+ 'למשל: שושנה, צבי, קרן…':'e.g. Rose, Sam, Kate…',
+ 'שמות האורחים':'Guest names',
+ 'הבא':'Next',
+ 'יש מישהו ששומר כשרות או עם אלרגיה?':'Does anyone keep kosher or have an allergy?',
+ 'שאלה אחת. אם כן, תסמני מי.':'Just one question. If yes, mark who.',
+ 'כן, יש':'Yes, someone does',
+ 'לא, כולם אוכלים הכל':'No, everyone eats everything',
+ 'מי?':'Who?',
+ 'מה הם לא אוכלים?':'What don\'t they eat?',
+ 'פרטי כשרות או אלרגיה':'Kosher or allergy details',
+ 'אדם {0} מתוך {1}':'Guest {0} of {1}',
+ 'מה {0} במיוחד? ומה לא {1}? כתבי או דברי, כמו שבא לך.':'What does {2} especially like? And what won\'t they eat? Type or dictate, whatever comes to mind.',
+ 'מה {0} אוהב':'What {0} likes',
+ 'מה הבנתי (לחצי × אם טעיתי)':'What I understood (tap × if I got it wrong)',
+ 'זה כל מה שאני יודעת, להמשיך':'That\'s all I know, continue',
+ 'הסרה':'Remove',
+ 'עוד לא כתבת כלום. אפשר לדלג.':'You haven\'t written anything yet. You can skip.',
+ 'להסיר':'Remove',
+ 'להוסיף':'Add',
+ 'הוגש בפעם הקודמת':'Served last time',
+ 'איש':'person',
+ 'אנשים':'people',
+ '{0} אוהבים':'liked by {0}',
+ 'לא הוצע':'Not suggested',
+ '‹':'›',
+ 'לא כתבת מספיק העדפות, אז הצעתי ארוחת שישי רגילה. אפשר לשנות כאן.':'You didn\'t write enough preferences, so I suggested a classic family dinner. You can change it here.',
+ 'לא מצאתי מנה בשביל: {0}.':'I couldn\'t find a dish for: {0}.',
+ 'הצעה לתפריט':'Menu suggestion',
+ 'סימנתי מראש לפי מה שהאורחים אוהבים':'Pre-selected from what your guests like',
+ '. מה שהוגש בפעם הקודמת מסומן, ואפשר להחליף':'. What you served last time is marked, and you can swap it',
+ '. את רק משנה.':'. You just adjust what you like.',
+ 'הכיני לי את הארוחה ({0} מנות)':'Prepare my meal ({0} {0:dish|dishes})',
+ 'איך מכינים {0}?':'How do you want to make {0}?',
+ 'בחרי דרך אחת.':'Pick one way.',
+ 'צריך גריל':'Needs a grill',
+ 'בחרתי':'Done',
+ 'הצעתי את זה כי ביקשו אש או גריל.':'Suggested because someone asked for the grill.',
+ 'הצעתי את זה כי מישהו צריך מעט שמן.':'Suggested because someone needs little oil.',
+ 'ההכתבה לא נתמכת בדפדפן הזה. לחצי על המיקרופון במקלדת של הטלפון.':'Dictation isn\'t supported in this browser. Tap the microphone on your phone\'s keyboard.',
+ 'מקשיבה… דברי':'Listening… go ahead',
+ 'אין הרשאה למיקרופון בדף הזה. לחצי על המיקרופון במקלדת של הטלפון.':'No microphone permission on this page. Tap the microphone on your phone\'s keyboard.',
+ 'לא הצלחתי לשמוע. נסי שוב או השתמשי במיקרופון של המקלדת.':'Couldn\'t hear you. Try again or use your keyboard\'s microphone.',
+ 'לא הצלחתי להפעיל את המיקרופון.':'Couldn\'t start the microphone.',
+ 'מכינה את הארוחה…':'Preparing the meal…',
+ 'שולחן, מתכונים וקניות':'Table, recipes and shopping',
+ 'ארוחה ':'Dinner ',
+ 'ארוחה משפחתית בלי כאב ראש.':'Family dinner without the headache.',
+ 'ארוחה חדשה':'New meal',
+ 'הארוחות שלי':'My meals',
+ '{0} אנשים · {1} מנות':'{0} {0:person|people} · {1} {1:dish|dishes}',
+ 'עודכן {0}':'Updated {0}',
+ 'המשך ‹':'Continue ›',
+ 'מחיקת {0}':'Delete {0}',
+ 'עוד אין ארוחות. התחילי ארוחה חדשה, ואני אזכור אותה כאן.':'No meals yet. Start a new meal and I\'ll keep it here.',
+ 'ביטול|undo':'Undo',
+ 'הארוחה נמחקה':'Meal deleted',
+ 'להוריד את {0} מהארוחה':'Remove {0} from the meal',
+ 'להחזיר את {0}':'Bring {0} back',
+ '{0} אנשים{1} · {2} עיקריות, {3} תוספות, {4} סלטים':'{0} {0:person|people}{1} · {2} {2:main|mains}, {3} {3:side|sides}, {4} {4:salad|salads}',
+ ' · בשרי וכשר':' · kosher meat meal',
+ 'גרם':'g',
+ 'ק"ג':'kg',
+ 'חצי {0}':'half a {0}',
+ 'בדקי':'Check',
+ 'שם הפריט':'Item name',
+ 'כמות':'Quantity',
+ 'שמירה':'Save',
+ 'ביטול':'Cancel',
+ 'עריכת {0}':'Edit {0}',
+ 'אין עדיין מתכון למנה הזאת.':'No recipe for this dish yet.',
+ 'אף אחד לא מסומן למנה הזאת, אז אין כמויות.':'Nobody is marked for this dish, so there are no amounts.',
+ 'מה צריך':'What you need',
+ 'ציוד':'Equipment',
+ 'שלבים':'Steps',
+ 'מוכן כש: {0}':'How to tell it\'s done: {0}',
+ ' מתכון צעד אחר צעד':' recipe step by step',
+ 'חיפוש סרטון ביוטיוב':'Search for a video on YouTube',
+ 'לקנות {0}':'Buy {0}',
+ 'איך מכינים':'How to make it',
+ 'להוריד את {0} מ{1}':'Remove {0} from {1}',
+ 'אף אחד לא מסומן למנה הזאת':'Nobody is marked for this dish',
+ 'שולחן הארוחה':'Dinner table',
+ 'לחצי על אדם או על מנה על השולחן':'Tap a person or a dish on the table',
+ 'מוגש ל-':'Serves ',
+ 'סמני וי ליד מה שהוא אוכל. השינוי מתעדכן בתפריט ובקניות.':'Check the dishes this person eats. Changes update the menu and the shopping list.',
+ 'הערה':'Note',
+ 'להוסיף עוד משהו שהוא אוהב':'Add something else they like',
+ 'למשל: קציצות, סלט כרוב':'e.g. meatballs, coleslaw',
+ 'להוסיף מאכל אהוב':'Add a favorite food',
+ 'הוספה':'Add',
+ 'כיסאות':'chairs',
+ 'צלחות':'plates',
+ 'כוסות':'glasses',
+ 'מנות':'dishes',
+ 'מה {0} אוכל?':'What does {0} eat?',
+ 'סגירה':'Close',
+ 'סמני מה כן, ובטלי מה לא. הכמויות מתעדכנות.':'Check what they eat and uncheck what they don\'t. The amounts update.',
+ 'הערה (אופציונלי)':'Note (optional)',
+ 'להוסיף משהו שהוא או היא אוהבים':'Add something they like',
+ 'למשל: שניצל, קציצות, סלט כרוב':'e.g. schnitzel, meatballs, coleslaw',
+ 'סיום':'Done',
+ 'איפוס להצעה המקורית':'Reset to the original suggestion',
+ '‹ לכל הארוחות':'‹ All meals',
+ 'לשינוי התפריט':'Change the menu',
+ 'COME OVER · שישי 30.10':'COME OVER',
+ 'ארוחת<br>שישי':'Family<br>dinner',
+ 'שולחן':'Table',
+ 'תפריט':'Menu',
+ 'קניות':'Shopping',
+ 'השולחן':'The table',
+ 'מי מגיע · לחיצה על שם פותחת את ההעדפות שלו':'Who\'s coming · tap a name to open their preferences',
+ '‹ חזרה לשולחן':'‹ Back to the table',
+ 'התפריט והמתכונים':'Menu and recipes',
+ 'רשימת קניות':'Shopping list',
+ 'להוסיף לרשימה (למשל: מפיות, 2 בקבוקי קולה)':'Add to the list (e.g. napkins, 2 bottles of cola)',
+ 'להוסיף פריט לרשימת הקניות':'Add an item to the shopping list',
+ 'העתיקי את הרשימה לוואטסאפ':'Copy the shopping list',
+ 'הוגש! שמרי את הארוחה':'Served! Save this meal',
+ 'נשמר':'Saved',
+ 'אוהב/ת גם: ':'Also likes: ',
+ 'נוסף: ':'Added: ',
+ 'לא מצאתי מנה ל: ':'No dish found for: ',
+ ', שמרתי בהערה.':', saved in the note.',
+ 'נוסף לרשימה':'Added to the list',
+ '{0} הוסר':'{0} removed',
+ 'הוסר מהרשימה':'Removed from the list',
+ '✔ נשמר. בפעם הבאה לא אחזור על זה':'✔ Saved. I won\'t repeat these next time',
+ '{0} נמחק':'{0} deleted',
+ '{0} ירד מהארוחה':'{0} left the meal',
+ '{0} ירד מ{1}':'{0} removed from {1}',
+ 'רשימת קניות לשישי':'Shopping list for dinner',
+ 'הועתק!':'Copied!',
+ 'אי אפשר להעתיק כאן':'Can\'t copy here',
+ 'עיקריות':'Mains',
+ 'תוספות':'Sides',
+ 'סלטים':'Salads',
+ 'בשר ודגים':'Meat & fish',
+ 'ירקות':'Produce',
+ 'יבשים וקירור':'Pantry & fridge',
+ 'הוספתי בעצמי':'Added by me',
+ 'כנראה יש בבית':'Probably at home',
+ 'קמח':'Flour',
+ 'שמן ושמן זית':'Oil & olive oil',
+ 'פפריקה, מלח ופלפל':'Paprika, salt & pepper'
+};
+const tr=(s,...a)=>{let r;
+  if(IS_HE)r=s.replace(/\|[a-z]+$/,'');
+  else{r=EN[s];if(r===undefined){r=s.replace(/\|[a-z]+$/,'');try{console.warn('missing translation: '+s)}catch(e){}}}
+  return a.length?r.replace(/\{(\d+)(?::([^|}]*)\|([^}]*))?\}/g,(m,i,o,mn)=>o===undefined?a[i]:(+a[i]===1?o:mn)):r};
+/* language-specific reading of free text */
+const RX=IS_HE
+ ?{eatsAll:/אוכל(ת)? הכל/,lowOil:/מעט שמן/,fire:/על האש|גריל|מנגל/,items:/,|\sו(?=\S)/}
+ :{eatsAll:/\b(?:eats?|will eat|happy with) (?:everything|anything|all)\b|\bnot (?:a )?picky\b/i,
+   lowOil:/\b(?:little|less|low|light on|not much|minimal|reduced)[- ]oil\b|\blow[- ]fat\b/i,
+   fire:/\bon the (?:fire|grill|barbecue|bbq)\b|\bgrill(?:ed)?\b|\bbarbecue\b|\bbbq\b|\bcharcoal\b|\bcookout\b/i,
+   items:/\s*,\s*|\s+(?:and|&)\s+/i};
+function applyStatic(){
+  document.title=tr('Come Over: אונבורדינג');
+  const b=document.getElementById('back');b.textContent=tr('→');b.setAttribute('aria-label',tr('חזרה'));
+  document.querySelector('.bar').setAttribute('aria-label',tr('התקדמות'))}
+function switchLang(l){try{localStorage.setItem('comeover-lang',l)}catch(e){}
+  try{history.replaceState(null,'',location.pathname+location.hash)}catch(e){}
+  location.reload()}
 /* ======== sample data from notes/guests.md (pre-filled so the flow can be tapped through) ======== */
-const SAMPLE_NAMES='שושנה, צבי, קרן, מתי, אלירן, עידו, הילה, מורין, מיתר, איציק';
-const SAMPLE={
+const SAMPLE_NAMES_HE='שושנה, צבי, קרן, מתי, אלירן, עידו, הילה, מורין, מיתר, איציק';
+const SAMPLE_HE={
  'שושנה':'אוהבת סלט מיונז, עוף וסלט עגבניות שרי עם כוסברה (מאוד). אוכלת הכל.',
  'צבי':'אוהב סלט מיונז ועוף. אוכל הכל.',
  'קרן':'אוהבת סלט כרוב סגול, קולסלו, עוף ופרגית. בררנית ומפונקת באוכל.',
@@ -224,7 +415,26 @@ const SAMPLE={
  'איציק':'אוכל הכל.'
 };
 const FEM=new Set(['שושנה','קרן','הילה','מיתר','מורין']);
-const KOSHER_SAMPLE=['קרן','מתי','אלירן','עידו','הילה'];
+const KOSHER_SAMPLE_HE=['קרן','מתי','אלירן','עידו','הילה'];
+/* English sample guests (made up), mirroring the Hebrew ones so the flow can be tapped through */
+const SAMPLE_NAMES_EN='Rose, Sam, Kate, Matt, Eli, Noah, Hannah, Maya, Mia, Jack';
+const SAMPLE_EN={
+ 'Rose':'Loves mayo potato salad, chicken and a cherry tomato salad with cilantro (a lot). Eats everything.',
+ 'Sam':'Loves mayo potato salad and chicken. Eats everything.',
+ 'Kate':'Loves purple cabbage coleslaw, chicken and chicken thighs. Picky and spoiled about food.',
+ 'Matt':'Loves a cookout, roast chicken from the grill, potatoes and fish. No vegetables, no onion or garlic. Little oil.',
+ 'Eli':'Loves schnitzel, rice, vegetable salad and cauliflower.',
+ 'Noah':'Loves cauliflower (really), salmon and schnitzel.',
+ 'Hannah':'Loves mashed potatoes and schnitzel.',
+ 'Maya':'Loves chicken, chicken thighs and liver.',
+ 'Mia':'Loves chicken, chicken thighs, wings on the grill, rice, green beans, fries and mashed potatoes. Very picky.',
+ 'Jack':'Eats everything.'
+};
+const KOSHER_SAMPLE_EN=['Kate','Matt','Eli','Noah','Hannah'];
+const KIDS_EN=new Set(['Eli','Noah','Hannah']);
+const SAMPLE_NAMES=IS_HE?SAMPLE_NAMES_HE:SAMPLE_NAMES_EN;
+const SAMPLE=IS_HE?SAMPLE_HE:SAMPLE_EN;
+const KOSHER_SAMPLE=IS_HE?KOSHER_SAMPLE_HE:KOSHER_SAMPLE_EN;
 
 /* ======== dish catalog: keywords decide who gets what; methods decide how it is made ======== */
 const B='בשר ודגים',V='ירקות',Y='יבשים וקירור';
@@ -263,24 +473,89 @@ const CAT=[
  {id:'cherry',n:'סלט שרי וכוסברה',c:'סלטים',kw:['שרי','כוסברה'],tag:['ירקות'],ing:[['עגבניות שרי',V,['קופסה','קופסאות'],.3],['כוסברה',V,['צרור','צרורות',.5],.15]],M:[{n:'ביתי',t:'10 דקות',oil:'שמן זית',lvl:'קל מאוד',x:[]}]},
  {id:'chopped',n:'סלט ירקות קצוץ',c:'סלטים',kw:['סלט ירקות'],tag:['ירקות'],ing:[['מלפפונים',V,['מלפפון','מלפפונים'],.5],['עגבניות',V,['עגבנייה','עגבניות'],.7],['שמן זית',Y,['בקבוק','בקבוקים'],.05]],M:[{n:'ביתי',t:'15 דקות',oil:'שמן זית',lvl:'קל מאוד',x:[]}]}
 ];
+/* ======== English dish catalog: same dishes, amounts and flags as the Hebrew one, English names and keywords ======== */
+if(!IS_HE){
+const bt=['bottle','bottles'],pk=['pack','packs'],bg=['bag','bags'],jr=['jar','jars'],lm=['lemon','lemons'],eg=['egg','eggs'],pt=['medium potato','medium potatoes'];
+const FRY=['Frying oil',bt],CRM=['Breadcrumbs',pk],SPR=['Oil spray',bt],CHC=[['Charcoal',bg],['Long lighter',['unit','units']]];
+const EN_CAT={
+ schnitzel:{n:'Chicken schnitzel',kw:['schnitzel','chicken cutlet','breaded chicken','chicken'],tag:['meat'],ex:['poultry'],
+  ing:[['Chicken breast',['breast half','breast halves']],['Eggs',eg]],
+  M:[{n:'Pan-fried',t:'35 min',oil:'A lot of oil',lvl:'Easy',x:[FRY,CRM]},
+     {n:'Oven-baked',t:'40 min',oil:'A little oil',lvl:'Easy',x:[SPR,CRM]},
+     {n:'Oven-baked, cornflake coating',t:'40 min',oil:'A little oil',lvl:'Easy',x:[SPR,['Cornflakes',pk]]}]},
+ wings:{n:'Chicken wings',kw:['wings','wing'],tag:['meat'],ex:['chicken','poultry'],
+  ing:[['Chicken wings',['wing','wings']]],
+  M:[{n:'In the oven',t:'30 min + 40 min',oil:'A little oil',lvl:'Easy',x:[]},
+     {n:'On the grill',t:'40 min',oil:'A little oil',lvl:'Medium',x:CHC}]},
+ pargit:{n:'Grilled chicken thighs (pargiyot)',kw:['pargiyot','pargit','chicken thighs','chicken thigh','boneless thighs','thighs','thigh'],tag:['meat'],ex:['chicken','poultry'],
+  ing:[['Chicken thighs (pargiyot)',['thigh','thighs']],['Lemons',lm]],
+  M:[{n:'In a grill pan',t:'1 hr chilling + 15 min',oil:'A little oil',lvl:'Easy',x:[]},
+     {n:'In the oven',t:'1 hr chilling + 20 min',oil:'A little oil',lvl:'Easy',x:[]},
+     {n:'On the grill',t:'1 hr chilling + 15 min',oil:'A little oil',lvl:'Medium',x:CHC}]},
+ roast:{n:'Roast chicken legs',kw:['roast chicken','roasted chicken','chicken legs','whole legs','drumsticks','drumstick','legs','grilled chicken','barbecue','bbq','cookout'],tag:['meat'],ex:['poultry'],
+  ing:[['Chicken leg quarters',['leg quarter','leg quarters']],['Lemons',lm]],
+  M:[{n:'In the oven',t:'1 hr',oil:'A little oil',lvl:'Easy',x:[]},
+     {n:'On the grill',t:'50 min',oil:'A little oil',lvl:'Medium',x:CHC}]},
+ salmon:{n:'Salmon',kw:['salmon','fish'],tag:['fish'],
+  ing:[['Salmon',['fillet','fillets']],['Lemons',lm]],
+  M:[{n:'In the oven',t:'20 min',oil:'A little oil',lvl:'Easy',x:[]},
+     {n:'In a skillet',t:'15 min',oil:'A little oil',lvl:'Medium',x:[]}]},
+ rice:{n:'White rice',kw:['rice'],
+  ing:[['Rice',pk]],
+  M:[{n:'In a pot',t:'25 min',oil:'1 tsp oil',lvl:'Easy',x:[]}]},
+ puree:{n:'Mashed potatoes (dairy-free)',kw:['mashed potatoes','mashed potato','mashed','puree','purée'],
+  ing:[['Potatoes',pt],['Dairy-free margarine',pk]],
+  M:[{n:'Homemade',t:'35 min',oil:'Margarine',lvl:'Easy',x:[]}]},
+ potato:{n:'Roasted potatoes',kw:['roasted potatoes','roast potatoes','roasted potato','roast potato','baked potatoes','potatoes','potato'],
+  ing:[['Potatoes',pt]],
+  M:[{n:'In the oven',t:'50 min',oil:'A little oil',lvl:'Easy',x:[]}]},
+ cauli:{n:'Cauliflower',kw:['cauliflower'],tag:['vegetables','veggies','veggie'],
+  ing:[['Cauliflower',['head','heads']]],
+  M:[{n:'Oven-roasted, crispy',t:'40 min',oil:'Oil',lvl:'Easy',x:[]},
+     {n:'Steamed',t:'20 min',oil:'No oil',lvl:'Easy',x:[]}]},
+ fries:{n:'Oven fries',kw:['french fries','fries','chips'],
+  ing:[['Frozen fries',bg]],
+  M:[{n:'In the oven',t:'30 min',oil:'No oil',lvl:'Easy',x:[]}]},
+ beans:{n:'Green beans',kw:['green beans','string beans','beans'],tag:['vegetables','veggies','veggie'],
+  ing:[['Green beans',bg]],
+  M:[{n:'Blanched',t:'10 min',oil:'1 tbsp olive oil',lvl:'Easy',x:[]}]},
+ mayo:{n:'Mayo potato salad',kw:['potato salad','mayo salad','mayonnaise salad','mayo'],tag:['vegetables','veggies','veggie'],ex:['potato','potatoes'],
+  ing:[['Potatoes',pt],['Eggs',eg],['Mayonnaise',jr],['Pickles',jr]],
+  M:[{n:'Homemade',t:'45 min + chilling',oil:'No oil',lvl:'Easy',x:[]}]},
+ slaw:{n:'Purple cabbage coleslaw',kw:['coleslaw','cole slaw','slaw','purple cabbage','red cabbage','cabbage salad'],tag:['vegetables','veggies','veggie'],
+  ing:[['Purple cabbage',['head','heads']],['Carrots',['carrot','carrots']],['Mayonnaise',jr]],
+  M:[{n:'Homemade',t:'20 min + chilling',oil:'No oil',lvl:'Easy',x:[]}]},
+ cherry:{n:'Cherry tomato & cilantro salad',kw:['cherry tomatoes','cherry tomato','cilantro','coriander'],tag:['vegetables','veggies','veggie'],
+  ing:[['Cherry tomatoes',['box','boxes']],['Cilantro',['bunch','bunches']]],
+  M:[{n:'Homemade',t:'10 min',oil:'Olive oil',lvl:'Very easy',x:[]}]},
+ chopped:{n:'Chopped vegetable salad',kw:['chopped vegetable salad','vegetable salad','veggie salad','chopped salad','israeli salad','garden salad','cucumber salad','tomato salad'],tag:['vegetables','veggies','veggie'],
+  ing:[['Cucumbers',['cucumber','cucumbers']],['Tomatoes',['tomato','tomatoes']],['Olive oil',bt]],
+  M:[{n:'Homemade',t:'15 min',oil:'Olive oil',lvl:'Very easy',x:[]}]}
+};
+const loc=(a,tx)=>{const o=a.slice(),u=a[2].slice();o[0]=tx[0];u[0]=tx[1][0];u[1]=tx[1][1];o[2]=u;return o};
+CAT.forEach(d=>{const e=EN_CAT[d.id];
+  d.n=e.n;d.kw=e.kw;d.tag=e.tag;d.ex=e.ex;
+  d.ing=d.ing.map((a,i)=>loc(a,e.ing[i]));
+  d.M=d.M.map((m,i)=>{const f=e.M[i];return Object.assign({},m,{n:f.n,t:f.t,oil:f.oil,lvl:f.lvl,x:m.x.map((a,j)=>loc(a,f.x[j]))})})});
+}
 const DISH=Object.fromEntries(CAT.map(d=>[d.id,d]));
 const GROUPS=['עיקריות','תוספות','סלטים'];
 const PANTRY=['קמח','שמן ושמן זית','פפריקה, מלח ופלפל'];
 
 /* ======== state ======== */
-const HK='comeover-ob-last',PK1='comeover-plan-v1',PK2='comeover-meal-v1';
-const S={defaulted:false,names:[],kosher:null,kWho:new Set(),kText:'בלי בשר וחלב יחד, בלי חזיר ופירות ים',txt:{},drop:{},menu:null,unmatched:[],open:null};
+const HK='comeover-ob-last'+SFX,PK1='comeover-plan-v1'+SFX,PK2='comeover-meal-v1'+SFX;
+const S={defaulted:false,names:[],kosher:null,kWho:new Set(),kText:tr('בלי בשר וחלב יחד, בלי חזיר ופירות ים'),txt:{},drop:{},menu:null,unmatched:[],open:null};
 let step=0,dir='fwd';
 const $=id=>document.getElementById(id);
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const he=n=>FEM.has(n)?{likes:'אוהבת',eats:'אוכלת'}:{likes:'אוהב',eats:'אוכל'};
 const lastServed=()=>{try{return JSON.parse(localStorage.getItem(HK)||'null')}catch(_){return null}};
 
-function parseNames(t){
+function parseNamesHE(t){
   if(/[\n,،]/.test(t))return [...new Set(t.split(/[\n,،]+/).map(x=>x.trim()).filter(Boolean))];
   return [...new Set(t.split(/\s+/).filter(Boolean).map((x,i)=>i>0&&x[0]==='ו'&&x.length>=4?x.slice(1):x))]}
 /* tiny stand-in for the real "understand free text" step, sentence by sentence */
-function extract(text){
+function extractHE(text){
   const out={likes:[],avoid:[],notes:[]};
   text.split(/[.\n]+/).map(s=>s.trim()).filter(Boolean).forEach(s=>{
     const items=x=>x.split(/,|\sו(?=\S)/).map(i=>i.replace(/^(ו|את)\s*/,'').trim()).filter(Boolean);
@@ -290,23 +565,50 @@ function extract(text){
     else out.notes.push(s);
   });
   return out}
-const kept=(n,k)=>{const x=extract(S.txt[n]||''),d=S.drop[n]||new Set();return x[k].filter(t=>!d.has(k+':'+t))};
+/* ---- English: reading the guest list and the free text about each guest ---- */
+function parseNamesEN(t){
+  const cap=x=>x.charAt(0).toUpperCase()+x.slice(1);
+  const s=t.replace(/\s+(?:and|&|\+)\s+/gi,',');
+  const parts=/[\n,;]/.test(s)?s.split(/[\n,;]+/):s.split(/\s+/);
+  return [...new Set(parts.map(x=>x.trim()).filter(x=>x&&!/^(?:and|&|\+)$/i.test(x)).map(cap))]}
+function extractEN(text,name){
+  const out={likes:[],avoid:[],notes:[]};
+  const rx=x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const subj=new RegExp('^(?:he|she|they|i|'+(name?rx(name)+'|':'')+'we)\\b[\\s,:\\-]*(?=\\S)','i');
+  const items=x=>x.split(RX.items).map(i=>i.trim().replace(/^(?:and|or|also|plus|any|all|some|the)\s+/i,'').replace(/^no\s+/i,'').replace(/[\s.!]+$/,'')).filter(Boolean);
+  const AV=[
+    /^(?:no|without|skip|zero)\s+(.+)$/i,
+    /^(?:(?:really|absolutely|totally)\s+)?(?:doesn'?t|does not|don'?t|do not|won'?t|will not|can'?t|cannot|never)\s+(?:really\s+|ever\s+)?(?:eat|like|touch|want|have|enjoy|stand|tolerate)s?\s+(.+)$/i,
+    /^(?:really\s+)?(?:hates?|dislikes?|avoids?|can'?t stand|cannot stand|stays? away from|(?:is |are )?allergic to|(?:is |are )?intolerant (?:to|of)|(?:is |are )?not (?:a fan of|into)|isn'?t (?:a fan of|into))\s+(.+)$/i];
+  const LK=/^(?:(?:really|absolutely|totally|always|especially|just)\s+)?(?:likes?|loves?|enjoys?|adores?|is (?:a (?:big |huge )?)?fan of|(?:is|are) into|prefers?|craves?|wants?)\s+(.+)$/i;
+  text.split(/[.!?\n;]+/).forEach(sent=>{
+    sent.split(/\s*,?\s*\b(?:but|though|however)\b\s*|\s+and\s+(?=(?:(?:he|she|they)\s+)?(?:doesn'?t|does not|don'?t|won'?t|can'?t|never|hates?|dislikes?|avoids?|loves?|likes?|enjoys?|no\s))/i).forEach(c=>{
+      c=(c||'').trim().replace(subj,'').trim();if(!c)return;
+      if(/^(?:is |are )?(?:a )?(?:strict )?(?:vegan|vegetarian)\b/i.test(c)){out.avoid.push('meat','fish');if(/vegan/i.test(c))out.avoid.push('mayo');return}
+      let m;
+      for(const re of AV){if((m=c.match(re))){out.avoid.push(...items(m[1]));return}}
+      if((m=c.match(LK))){out.likes.push(...items(m[1]));return}
+      out.notes.push(c)})});
+  return out}
+const parseNames=t=>IS_HE?parseNamesHE(t):parseNamesEN(t);
+const extract=(text,name)=>IS_HE?extractHE(text):extractEN(text,name);
+const kept=(n,k)=>{const x=extract(S.txt[n]||'',n),d=S.drop[n]||new Set();return x[k].filter(t=>!d.has(k+':'+t))};
 
 /* ======== the suggestion: who likes what -> which dishes, how ======== */
 const clean=t=>t.replace(/\(.*?\)/g,'').trim();
 function excluded(n,dish){
-  const av=kept(n,'avoid');
-  return av.some(a=>(dish.tag||[]).some(t=>a.includes(t)||t.includes(a))||dish.kw.some(k=>a.includes(k)||k.includes(a)))}
+  const av=kept(n,'avoid').map(a=>a.toLowerCase());
+  return av.some(a=>(dish.tag||[]).concat(dish.ex||[]).some(t=>a.includes(t)||t.includes(a))||dish.kw.some(k=>a.includes(k)||k.includes(a)))}
 function suggest(){
   const last=lastServed(),menu={};
   CAT.forEach(d=>menu[d.id]={on:false,m:0,who:[],manual:false});
   S.unmatched=[];
   const eatsAll=new Set(),lowOil=new Set(),liked={};
   S.names.forEach(n=>{
-    const all=(S.txt[n]||'');if(/אוכל(ת)? הכל/.test(all))eatsAll.add(n);if(/מעט שמן/.test(all))lowOil.add(n);
+    const all=(S.txt[n]||'');if(RX.eatsAll.test(all))eatsAll.add(n);if(RX.lowOil.test(all))lowOil.add(n);
     kept(n,'likes').forEach(item=>{
-      const it=clean(item);let best=null,bl=0;
-      CAT.forEach(d=>d.kw.forEach(k=>{if(it.includes(k)&&k.length>bl){best=d;bl=k.length}}));
+      const it=clean(item),lo=it.toLowerCase();let best=null,bl=0;
+      CAT.forEach(d=>d.kw.forEach(k=>{if(lo.includes(k)&&k.length>bl){best=d;bl=k.length}}));
       if(!best){S.unmatched.push({n,item:it});return}
       if(excluded(n,best))return;
       if(!menu[best.id].who.includes(n))menu[best.id].who.push(n);
@@ -316,7 +618,7 @@ function suggest(){
     if(m.who.length>=2)eatsAll.forEach(n=>{if(!m.who.includes(n)&&!excluded(n,d))m.who.push(n)});
     /* default method: what an eater asked for ("על האש"), else low oil if an eater needs it, else the first */
     const asked=(liked[d.id]||[]).join(' ');
-    let idx=d.M.findIndex(x=>x.fire&&/על האש|גריל|מנגל/.test(asked));
+    let idx=d.M.findIndex(x=>x.fire&&RX.fire.test(asked));
     if(idx<0&&m.who.some(n=>lowOil.has(n)))idx=d.M.findIndex(x=>x.low);
     m.m=Math.max(0,idx);
     m.on=m.who.length>0;
@@ -337,60 +639,60 @@ function view(i){
   if(i===1)return kosher();
   if(i>=2&&i<2+n)return guest(i-2);
   return S.open?methods(S.open):menu()}
-const micBtn=`<button class="mic" data-mic type="button" aria-label="הכתבה בקול">🎤</button>`;
-function who(){return `<h1>מי מגיע?</h1><p class="sub">כתבי או דברי, רק שמות. אפשר להוסיף אחר כך.</p>
- <div class="tawrap"><textarea id="names" rows="3" placeholder="למשל: שושנה, צבי, קרן…" aria-label="שמות האורחים">${esc(S.names.join(', ')||SAMPLE_NAMES)}</textarea>${micBtn}</div><p class="micmsg" id="micmsg"></p>
- <div class="chips" id="nchips"></div><div class="spacer"></div><button class="cta" id="next">הבא</button>`}
-function kosher(){return `<h1>יש מישהו ששומר כשרות או עם אלרגיה?</h1><p class="sub">שאלה אחת. אם כן, תסמני מי.</p>
- <div class="big"><button class="opt" data-k="yes" aria-pressed="${S.kosher==='yes'}"><span class="emoji">✡️</span>כן, יש</button>
- <button class="opt" data-k="no" aria-pressed="${S.kosher==='no'}"><span class="emoji">🍽️</span>לא, כולם אוכלים הכל</button></div>
- <div id="kmore"></div><div class="spacer"></div><button class="cta" id="next" ${S.kosher?'':'disabled'}>הבא</button>`}
-function kmore(){if(S.kosher!=='yes')return '';return `<p class="lbl">מי?</p><div class="chips">${S.names.map(n=>`<button class="chip pick${S.kWho.has(n)?' sel':''}" data-kw="${esc(n)}" aria-pressed="${S.kWho.has(n)}">${esc(n)}</button>`).join('')}</div>
- <p class="lbl">מה הם לא אוכלים?</p><input type="text" id="ktext" value="${esc(S.kText)}" aria-label="פרטי כשרות או אלרגיה">`}
+const micBtn=`<button class="mic" data-mic type="button" aria-label="${tr('הכתבה בקול')}">🎤</button>`;
+function who(){return `<h1>${tr('מי מגיע?')}</h1><p class="sub">${tr('כתבי או דברי, רק שמות. אפשר להוסיף אחר כך.')}</p>
+ <div class="tawrap"><textarea id="names" rows="3" placeholder="${tr('למשל: שושנה, צבי, קרן…')}" aria-label="${tr('שמות האורחים')}">${esc(S.names.join(', ')||SAMPLE_NAMES)}</textarea>${micBtn}</div><p class="micmsg" id="micmsg"></p>
+ <div class="chips" id="nchips"></div><div class="spacer"></div><button class="cta" id="next">${tr('הבא')}</button>`}
+function kosher(){return `<h1>${tr('יש מישהו ששומר כשרות או עם אלרגיה?')}</h1><p class="sub">${tr('שאלה אחת. אם כן, תסמני מי.')}</p>
+ <div class="big"><button class="opt" data-k="yes" aria-pressed="${S.kosher==='yes'}"><span class="emoji">✡️</span>${tr('כן, יש')}</button>
+ <button class="opt" data-k="no" aria-pressed="${S.kosher==='no'}"><span class="emoji">🍽️</span>${tr('לא, כולם אוכלים הכל')}</button></div>
+ <div id="kmore"></div><div class="spacer"></div><button class="cta" id="next" ${S.kosher?'':'disabled'}>${tr('הבא')}</button>`}
+function kmore(){if(S.kosher!=='yes')return '';return `<p class="lbl">${tr('מי?')}</p><div class="chips">${S.names.map(n=>`<button class="chip pick${S.kWho.has(n)?' sel':''}" data-kw="${esc(n)}" aria-pressed="${S.kWho.has(n)}">${esc(n)}</button>`).join('')}</div>
+ <p class="lbl">${tr('מה הם לא אוכלים?')}</p><input type="text" id="ktext" value="${esc(S.kText)}" aria-label="${tr('פרטי כשרות או אלרגיה')}">`}
 function guest(g){const n=S.names[g],h=he(n);
   if(!(n in S.txt))S.txt[n]=SAMPLE[n]||'';
-  return `<div class="who"><div class="av">${esc(n[0])}</div><div><h1 style="margin:0;font-size:26px">${esc(n)}</h1><span class="sub" style="margin:0;font-size:13px">אדם ${g+1} מתוך ${S.names.length}</span></div></div>
-  <p class="sub" style="margin-top:10px">מה ${h.likes} במיוחד? ומה לא ${h.eats}? כתבי או דברי, כמו שבא לך.</p>
-  <div class="tawrap"><textarea id="gtext" rows="4" aria-label="מה ${esc(n)} אוהב">${esc(S.txt[n])}</textarea>${micBtn}</div><p class="micmsg" id="micmsg"></p>
-  <p class="lbl">מה הבנתי (לחצי × אם טעיתי)</p><div class="chips" id="gchips"></div>
-  <div class="spacer"></div><button class="cta" id="next">הבא</button>
-  <button class="link" id="enough">זה כל מה שאני יודעת, להמשיך</button>`}
-function gchips(n){const x=extract(S.txt[n]||''),d=S.drop[n]||(S.drop[n]=new Set());
-  const c=(k,cls,label)=>x[k].map(t=>{const key=k+':'+t;return d.has(key)?'':`<span class="chip ${cls}">${label} ${esc(t)}<button data-drop="${esc(key)}" aria-label="הסרה">×</button></span>`}).join('');
-  return c('likes','like','❤')+c('avoid','avoid','🚫')+c('notes','note','')||'<span class="sub" style="margin:0">עוד לא כתבת כלום. אפשר לדלג.</span>'}
+  return `<div class="who"><div class="av">${esc(n[0].toUpperCase())}</div><div><h1 style="margin:0;font-size:26px">${esc(n)}</h1><span class="sub" style="margin:0;font-size:13px">${tr('אדם {0} מתוך {1}',g+1,S.names.length)}</span></div></div>
+  <p class="sub" style="margin-top:10px">${tr('מה {0} במיוחד? ומה לא {1}? כתבי או דברי, כמו שבא לך.',h.likes,h.eats,n)}</p>
+  <div class="tawrap"><textarea id="gtext" rows="4" aria-label="${tr('מה {0} אוהב',esc(n))}">${esc(S.txt[n])}</textarea>${micBtn}</div><p class="micmsg" id="micmsg"></p>
+  <p class="lbl">${tr('מה הבנתי (לחצי × אם טעיתי)')}</p><div class="chips" id="gchips"></div>
+  <div class="spacer"></div><button class="cta" id="next">${tr('הבא')}</button>
+  <button class="link" id="enough">${tr('זה כל מה שאני יודעת, להמשיך')}</button>`}
+function gchips(n){const x=extract(S.txt[n]||'',n),d=S.drop[n]||(S.drop[n]=new Set());
+  const c=(k,cls,label)=>x[k].map(t=>{const key=k+':'+t;return d.has(key)?'':`<span class="chip ${cls}">${label} ${esc(t)}<button data-drop="${esc(key)}" aria-label="${tr('הסרה')}">×</button></span>`}).join('');
+  return c('likes','like','❤')+c('avoid','avoid','🚫')+c('notes','note','')||`<span class="sub" style="margin:0">${tr('עוד לא כתבת כלום. אפשר לדלג.')}</span>`}
 
 function menu(){
   const last=lastServed(),on=CAT.filter(d=>S.menu[d.id].on).length;
-  const rows=GROUPS.map(g=>`<p class="mg">${g}</p>`+CAT.filter(d=>d.c===g).map(d=>{const m=S.menu[d.id],w=dishWho(d.id),meth=d.M[m.m],multi=d.M.length>1;
+  const rows=GROUPS.map(g=>`<p class="mg">${tr(g)}</p>`+CAT.filter(d=>d.c===g).map(d=>{const m=S.menu[d.id],w=dishWho(d.id),meth=d.M[m.m],multi=d.M.length>1;
     const served=last&&last.ids.includes(d.id);
-    return `<div class="mrow${m.on?' on':''}"><button class="tog" data-tog="${d.id}" aria-label="${m.on?'להסיר':'להוסיף'} ${d.n}" aria-pressed="${m.on}"><span class="tick"></span></button>
-     <button class="body" data-open="${d.id}" ${multi?'':'tabindex="-1"'}><b>${d.n}${served?'<span class="badge">הוגש בפעם הקודמת</span>':''}</b><span class="meta">${m.on?`${meth.n} · ${w.length} ${w.length===1?'איש':'אנשים'}`:(m.who.length?`${m.who.length} אוהבים`:'לא הוצע')}</span></button>
-     <span class="go">${multi?'‹':''}</span></div>`}).join('')).join('');
-  const dn=S.defaulted?`<p class="note2">לא כתבת מספיק העדפות, אז הצעתי ארוחת שישי רגילה. אפשר לשנות כאן.</p>`:'';
-  const un=S.unmatched.length?`<p class="note2">לא מצאתי מנה בשביל: ${[...new Set(S.unmatched.map(u=>`${u.item} (${u.n})`))].join(', ')}.</p>`:'';
-  return `<h1>הצעה לתפריט</h1><p class="sub">סימנתי מראש לפי מה שהאורחים אוהבים${last?'. מה שהוגש בפעם הקודמת מסומן, ואפשר להחליף':''}. את רק משנה.</p>
-   ${dn}${rows}${un}<div class="spacer"></div><button class="cta" id="next" ${on?'':'disabled'}>הכיני לי את הארוחה (${on} מנות)</button>`}
+    return `<div class="mrow${m.on?' on':''}"><button class="tog" data-tog="${d.id}" aria-label="${m.on?tr('להסיר'):tr('להוסיף')} ${d.n}" aria-pressed="${m.on}"><span class="tick"></span></button>
+     <button class="body" data-open="${d.id}" ${multi?'':'tabindex="-1"'}><b>${d.n}${served?`<span class="badge">${tr('הוגש בפעם הקודמת')}</span>`:''}</b><span class="meta">${m.on?`${meth.n} · ${w.length} ${w.length===1?tr('איש'):tr('אנשים')}`:(m.who.length?`${tr('{0} אוהבים',m.who.length)}`:tr('לא הוצע'))}</span></button>
+     <span class="go">${multi?tr('‹'):''}</span></div>`}).join('')).join('');
+  const dn=S.defaulted?`<p class="note2">${tr('לא כתבת מספיק העדפות, אז הצעתי ארוחת שישי רגילה. אפשר לשנות כאן.')}</p>`:'';
+  const un=S.unmatched.length?`<p class="note2">${tr('לא מצאתי מנה בשביל: {0}.',[...new Set(S.unmatched.map(u=>`${u.item} (${u.n})`))].join(', '))}</p>`:'';
+  return `<h1>${tr('הצעה לתפריט')}</h1><p class="sub">${tr('סימנתי מראש לפי מה שהאורחים אוהבים')}${last?tr('. מה שהוגש בפעם הקודמת מסומן, ואפשר להחליף'):''}${tr('. את רק משנה.')}</p>
+   ${dn}${rows}${un}<div class="spacer"></div><button class="cta" id="next" ${on?'':'disabled'}>${tr('הכיני לי את הארוחה ({0} מנות)',on)}</button>`}
 function methods(id){const d=DISH[id],m=S.menu[id],w=dishWho(id);
-  return `<h1>איך מכינים ${d.n}?</h1><p class="sub">${w.length} ${w.length===1?'איש':'אנשים'}: ${w.join(', ')}. בחרי דרך אחת.</p>
-  ${d.M.map((x,i)=>`<button class="meth" data-m="${i}" aria-pressed="${m.m===i}"><b>${x.n}</b><span class="facts"><span>⏱ ${x.t}</span><span>🫒 ${x.oil}</span><span>${x.lvl}</span>${x.fire?'<span>צריך גריל</span>':''}</span>${i===m.m&&sugReason(d,m,x)?`<span class="why">${sugReason(d,m,x)}</span>`:''}</button>`).join('')}
-  <div class="spacer"></div><button class="cta" id="next">בחרתי</button>`}
+  return `<h1>${tr('איך מכינים {0}?',d.n)}</h1><p class="sub">${w.length} ${w.length===1?tr('איש'):tr('אנשים')}: ${w.join(', ')}. ${tr('בחרי דרך אחת.')}</p>
+  ${d.M.map((x,i)=>`<button class="meth" data-m="${i}" aria-pressed="${m.m===i}"><b>${x.n}</b><span class="facts"><span>⏱ ${x.t}</span><span>🫒 ${x.oil}</span><span>${x.lvl}</span>${x.fire?`<span>${tr('צריך גריל')}</span>`:''}</span>${i===m.m&&sugReason(d,m,x)?`<span class="why">${sugReason(d,m,x)}</span>`:''}</button>`).join('')}
+  <div class="spacer"></div><button class="cta" id="next">${tr('בחרתי')}</button>`}
 function sugReason(d,m,x){
-  if(x.fire&&m.who.some(n=>/על האש|גריל|מנגל/.test((S.txt[n]||''))))return 'הצעתי את זה כי ביקשו אש או גריל.';
-  if(x.low&&m.who.some(n=>/מעט שמן/.test(S.txt[n]||'')))return 'הצעתי את זה כי מישהו צריך מעט שמן.';
+  if(x.fire&&m.who.some(n=>RX.fire.test((S.txt[n]||''))))return tr('הצעתי את זה כי ביקשו אש או גריל.');
+  if(x.low&&m.who.some(n=>RX.lowOil.test(S.txt[n]||'')))return tr('הצעתי את זה כי מישהו צריך מעט שמן.');
   return ''}
 /* ======== dictation (speech to text) ======== */
 let rec=null;
 function dictate(btn){
   const ta=btn.parentElement.querySelector('textarea'),msg=$('micmsg');
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){msg.textContent='ההכתבה לא נתמכת בדפדפן הזה. לחצי על המיקרופון במקלדת של הטלפון.';return}
+  if(!SR){msg.textContent=tr('ההכתבה לא נתמכת בדפדפן הזה. לחצי על המיקרופון במקלדת של הטלפון.');return}
   if(rec){rec.stop();return}
-  rec=new SR();rec.lang='he-IL';rec.interimResults=false;rec.maxAlternatives=1;
-  rec.onstart=()=>{btn.classList.add('rec');msg.textContent='מקשיבה… דברי'};
+  rec=new SR();rec.lang=SPEECH;rec.interimResults=false;rec.maxAlternatives=1;
+  rec.onstart=()=>{btn.classList.add('rec');msg.dataset.rec=1;msg.textContent=tr('מקשיבה… דברי')};
   rec.onresult=e=>{const t=[...e.results].map(r=>r[0].transcript).join(' ').trim();if(!t)return;ta.value+=(ta.value&&!/\s$/.test(ta.value)?' ':'')+t;ta.dispatchEvent(new Event('input',{bubbles:true}))};
-  rec.onerror=e=>{msg.textContent=(e.error==='not-allowed'||e.error==='service-not-allowed')?'אין הרשאה למיקרופון בדף הזה. לחצי על המיקרופון במקלדת של הטלפון.':'לא הצלחתי לשמוע. נסי שוב או השתמשי במיקרופון של המקלדת.'};
-  rec.onend=()=>{btn.classList.remove('rec');if(msg.textContent.startsWith('מקשיבה'))msg.textContent='';rec=null};
-  try{rec.start()}catch(_){rec=null;msg.textContent='לא הצלחתי להפעיל את המיקרופון.'}}
+  rec.onerror=e=>{delete msg.dataset.rec;msg.textContent=(e.error==='not-allowed'||e.error==='service-not-allowed')?tr('אין הרשאה למיקרופון בדף הזה. לחצי על המיקרופון במקלדת של הטלפון.'):tr('לא הצלחתי לשמוע. נסי שוב או השתמשי במיקרופון של המקלדת.')};
+  rec.onend=()=>{btn.classList.remove('rec');if(msg.dataset.rec)msg.textContent='';delete msg.dataset.rec;rec=null};
+  try{rec.start()}catch(_){rec=null;msg.textContent=tr('לא הצלחתי להפעיל את המיקרופון.')}}
 
 /* ======== render + wiring ======== */
 function toast(m){const p=$('phone');p.querySelector('.otoast')?.remove();const t=document.createElement('div');t.className='otoast';t.textContent=m;p.appendChild(t);setTimeout(()=>t.remove(),1800)}
@@ -425,13 +727,13 @@ function render(){
   if(sub){sc.addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(b){S.menu[S.open].m=+b.dataset.m;S.menu[S.open].on=true;render()}})}
   if(nx)nx.onclick=()=>{
     if(sub){S.open=null;render()}
-    else if(step===2+n){sc.innerHTML='<div style="text-align:center"><div class="spin"></div><h1 style="font-size:24px">מכינה את הארוחה…</h1><p class="sub">שולחן, מתכונים וקניות</p></div>';sc.style.justifyContent='center';setTimeout(enterMeal,1100)}
+    else if(step===2+n){sc.innerHTML=`<div style="text-align:center"><div class="spin"></div><h1 style="font-size:24px">${tr('מכינה את הארוחה…')}</h1><p class="sub">${tr('שולחן, מתכונים וקניות')}</p></div>`;sc.style.justifyContent='center';setTimeout(enterMeal,1100)}
     else go(step+1)};
 }
-const MK='comeover-meals-v1';let CUR=null;
+const MK='comeover-meals-v1'+SFX;let CUR=null;
 const loadMeals=()=>{try{return JSON.parse(localStorage.getItem(MK)||'null')||{list:[]}}catch(_){return {list:[]}}};
 const storeMeals=m=>{try{localStorage.setItem(MK,JSON.stringify(m))}catch(_){}};
-const mealTitle=()=>'ארוחה '+new Date().toLocaleDateString('he-IL',{day:'numeric',month:'numeric'});
+const mealTitle=()=>tr('ארוחה ')+new Date().toLocaleDateString(LOC,DATEOPT);
 const snapshot=()=>({names:S.names,kosher:S.kosher,kWho:[...S.kWho],kText:S.kText,txt:S.txt,drop:Object.fromEntries(Object.entries(S.drop).map(([k,v])=>[k,[...v]])),menu:S.menu,unmatched:S.unmatched,defaulted:S.defaulted});
 /* a dinner planned before the list existed becomes the first meal in it */
 function migrateOld(){const m=loadMeals();if(m.list.length||m.migrated)return;try{const p=JSON.parse(localStorage.getItem(PK1)||'null');if(p&&p.names&&p.names.length&&p.menu){m.list.push({id:'m'+Date.now(),title:mealTitle(),created:Date.now(),updated:Date.now(),plan:p,mealState:JSON.parse(localStorage.getItem(PK2)||'null')})}}catch(_){}m.migrated=1;storeMeals(m)}
@@ -439,27 +741,28 @@ function savePlan(){const m=loadMeals();if(!CUR)CUR='m'+Date.now();let e=m.list.
 function saveMealState(st){const m=loadMeals(),e=m.list.find(x=>x.id===CUR);if(e){e.mealState=st;e.updated=Date.now();storeMeals(m)}}
 function enterMeal(){savePlan();$('home').hidden=true;$('phone').hidden=true;startMeal()}
 /* ---- home: continue a planned meal or start a new one ---- */
-const fmtWhen=t=>new Date(t).toLocaleString('he-IL',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'});
+const fmtWhen=t=>new Date(t).toLocaleString(LOC,WHENOPT);
 function homeHTML(){const m=loadMeals();
-  return `<div class="status"><span>9:41</span><span></span></div><div class="homein"><h1>Come Over</h1><p class="sub">ארוחה משפחתית בלי כאב ראש.</p>
-  <button class="cta" data-new>＋ ארוחה חדשה</button>
-  ${m.list.length?`<p class="mg">הארוחות שלי</p>`+m.list.map(e=>{const p=e.plan||{},n=(p.names||[]).length,d=p.menu?Object.values(p.menu).filter(x=>x.on).length:0;
-    return `<div class="mcard"><button class="mbody" data-cont="${e.id}"><b>${esc(e.title)}</b><span>${n} אנשים · ${d} מנות</span><span class="mu">עודכן ${fmtWhen(e.updated||e.created)}</span></button><span class="mgo" aria-hidden="true">המשך ‹</span><button class="mdel" data-mdel="${e.id}" aria-label="מחיקת ${esc(e.title)}">🗑</button></div>`}).join(''):'<p class="sub" style="margin-top:24px">עוד אין ארוחות. התחילי ארוחה חדשה, ואני אזכור אותה כאן.</p>'}
+  return `<div class="status"><span>9:41</span><span></span></div><div class="homein"><div class="langrow"><button class="langsw" data-lang="${IS_HE?'en':'he'}" lang="${IS_HE?'en':'he'}">${IS_HE?'English':'עברית'}</button></div><h1>Come Over</h1><p class="sub">${tr('ארוחה משפחתית בלי כאב ראש.')}</p>
+  <button class="cta" data-new>＋ ${tr('ארוחה חדשה')}</button>
+  ${m.list.length?`<p class="mg">${tr('הארוחות שלי')}</p>`+m.list.map(e=>{const p=e.plan||{},n=(p.names||[]).length,d=p.menu?Object.values(p.menu).filter(x=>x.on).length:0;
+    return `<div class="mcard"><button class="mbody" data-cont="${e.id}"><b>${esc(e.title)}</b><span>${tr('{0} אנשים · {1} מנות',n,d)}</span><span class="mu">${tr('עודכן {0}',fmtWhen(e.updated||e.created))}</span></button><span class="mgo" aria-hidden="true">${tr('המשך ‹')}</span><button class="mdel" data-mdel="${e.id}" aria-label="${tr('מחיקת {0}',esc(e.title))}">🗑</button></div>`}).join(''):`<p class="sub" style="margin-top:24px">${tr('עוד אין ארוחות. התחילי ארוחה חדשה, ואני אזכור אותה כאן.')}</p>`}
   </div>`}
 function showHome(){$('phone').hidden=true;$('meal').hidden=true;const h=$('home');h.hidden=false;h.querySelector('.phone').innerHTML=homeHTML()}
-function newMeal(){Object.assign(S,{names:[],kosher:null,kWho:new Set(),kText:'בלי בשר וחלב יחד, בלי חזיר ופירות ים',txt:{},drop:{},menu:null,unmatched:[],open:null,defaulted:false,restore:false});CUR=null;$('home').hidden=true;$('phone').hidden=false;step=0;dir='fwd';render()}
+function newMeal(){Object.assign(S,{names:[],kosher:null,kWho:new Set(),kText:tr('בלי בשר וחלב יחד, בלי חזיר ופירות ים'),txt:{},drop:{},menu:null,unmatched:[],open:null,defaulted:false,restore:false});CUR=null;$('home').hidden=true;$('phone').hidden=false;step=0;dir='fwd';render()}
 function continueMeal(id){const e=loadMeals().list.find(x=>x.id===id);if(!e||!e.plan)return;const j=e.plan;
   Object.assign(S,j,{kWho:new Set(j.kWho||[]),drop:Object.fromEntries(Object.entries(j.drop||{}).map(([k,v])=>[k,new Set(v)])),open:null,restore:true});CUR=id;enterMeal()}
-function homeToast(msg,undo){const p=$('home').querySelector('.phone');p.querySelector('.otoast')?.remove();const t=document.createElement('div');t.className='otoast';t.textContent=msg;if(undo){const b=document.createElement('button');b.textContent='ביטול';b.style.cssText='margin-right:12px;color:#f3b79e;font-weight:700';b.onclick=()=>{undo();t.remove()};t.appendChild(b)}p.appendChild(t);setTimeout(()=>t.remove(),4000)}
+function homeToast(msg,undo){const p=$('home').querySelector('.phone');p.querySelector('.otoast')?.remove();const t=document.createElement('div');t.className='otoast';t.textContent=msg;if(undo){const b=document.createElement('button');b.textContent=tr('ביטול|undo');b.style.cssText='margin-inline-start:12px;color:#f3b79e;font-weight:700';b.onclick=()=>{undo();t.remove()};t.appendChild(b)}p.appendChild(t);setTimeout(()=>t.remove(),4000)}
 function deleteMeal(id){const m=loadMeals(),i=m.list.findIndex(x=>x.id===id);if(i<0)return;const [e]=m.list.splice(i,1);storeMeals(m);showHome();
-  homeToast('הארוחה נמחקה',()=>{const m2=loadMeals();m2.list.splice(Math.min(i,m2.list.length),0,e);storeMeals(m2);showHome()})}
-document.getElementById('home').addEventListener('click',e=>{const t=e.target.closest('[data-new],[data-cont],[data-mdel]');if(!t)return;
+  homeToast(tr('הארוחה נמחקה'),()=>{const m2=loadMeals();m2.list.splice(Math.min(i,m2.list.length),0,e);storeMeals(m2);showHome()})}
+document.getElementById('home').addEventListener('click',e=>{const t=e.target.closest('[data-new],[data-cont],[data-mdel],[data-lang]');if(!t)return;
+  if(t.dataset.lang){switchLang(t.dataset.lang);return}
   if(t.hasAttribute('data-new'))newMeal();else if(t.dataset.cont)continueMeal(t.dataset.cont);else if(t.dataset.mdel)deleteMeal(t.dataset.mdel)});
 function leaveMeal(to){$('meal').hidden=true;$('phone').hidden=false;S.open=null;if(to===0){step=0}else{step=2+S.names.length}dir='back';render()}
 function go(i,d){dir=d||(i<step?'back':'fwd');step=i;S.open=null;render()}
 $('back').onclick=()=>{if(S.open){S.open=null;dir='back';render()}else if(step===0)showHome();else go(step-1,'back')};
 /* opening the app: the home screen (continue a planned meal, or start a new one) */
-migrateOld();showHome();
+applyStatic();migrateOld();showHome();
 
 /* ======== meal screen ======== */
 function startMeal(){
@@ -470,12 +773,12 @@ const PANTRY=['קמח','שמן ושמן זית','פפריקה, מלח ופלפל
 const GUESTS=S.names.slice();
 const GONE={}; /* guest -> [[dish, index], ...] so removal can be undone */
 const present=()=>GUESTS.filter(g=>!GONE[g]);
-const guestsHTML=()=>present().map(g=>`<span class="pill"><button class="pn" data-pref-open="${g}">${g}</button><button data-rmg="${g}" aria-label="להוריד את ${g} מהארוחה">×</button></span>`).join('')+Object.keys(GONE).map(g=>`<span class="pill gone">${g}<button data-addg="${g}" aria-label="להחזיר את ${g}">+</button></span>`).join('');
+const guestsHTML=()=>present().map(g=>`<span class="pill"><button class="pn" data-pref-open="${g}">${g}</button><button data-rmg="${g}" aria-label="${tr('להוריד את {0} מהארוחה',g)}">×</button></span>`).join('')+Object.keys(GONE).map(g=>`<span class="pill gone">${g}<button data-addg="${g}" aria-label="${tr('להחזיר את {0}',g)}">+</button></span>`).join('');
 const nOn=c=>Object.values(D).filter(d=>d.c===c&&d.who.length).length;
-const heroP=()=>`${present().length} אנשים${S.kosher==='yes'?' · בשרי וכשר':''} · ${nOn('עיקריות')} עיקריות, ${nOn('תוספות')} תוספות, ${nOn('סלטים')} סלטים`;
+const heroP=()=>tr('{0} אנשים{1} · {2} עיקריות, {3} תוספות, {4} סלטים',present().length,S.kosher==='yes'?tr(' · בשרי וכשר'):'',nOn('עיקריות'),nOn('תוספות'),nOn('סלטים'));
 const fmtQ=(n,u)=>{
-  if(u==='kg'){const k=Math.ceil(n/0.05-1e-9)*0.05;return k<1?`${Math.round(k*1000)} גרם`:`${+k.toFixed(2)} ק"ג`}
-  const st=u[2]||1,c=Math.max(st,Math.ceil(n/st-1e-9)*st);return c===.5?`חצי ${u[0]}`:`${c} ${c===1?u[0]:u[1]}`};
+  if(u==='kg'){const k=Math.ceil(n/0.05-1e-9)*0.05;return k<1?`${Math.round(k*1000)} ${tr('גרם')}`:`${+k.toFixed(2)} ${tr('ק"ג')}`}
+  const st=u[2]||1,c=Math.max(st,Math.ceil(n/st-1e-9)*st);return c===.5?`${tr('חצי {0}',u[0])}`:`${c} ${c===1?u[0]:u[1]}`};
 function need(){
   const t={};
   for(const id in ING){const cnt=D[id].who.length;if(!cnt)continue;
@@ -487,21 +790,27 @@ function shopData(){
   const fix=r=>{const o=EDIT[r.key]||{};return o.del?null:{key:r.key,n:o.n??r.n,q:o.q??r.q}};
   [B,V,Y].forEach(g=>{const rows=t.filter(i=>i.g===g).map(fix).filter(Boolean);if(rows.length)out.push([g,rows])});
   if(EXTRA.length)out.push(['הוספתי בעצמי',EXTRA.map((n,i)=>({key:'x|'+i,n,q:'',extra:1}))]);
-  const pr=PANTRY.map(n=>fix({key:'p|'+n,n,q:'בדקי'})).filter(Boolean);if(pr.length)out.push(['כנראה יש בבית',pr]);
+  const pr=PANTRY.map(n=>fix({key:'p|'+n,n:tr(n),q:tr('בדקי')})).filter(Boolean);if(pr.length)out.push(['כנראה יש בבית',pr]);
   return out}
 const shopRow=r=>{const k=esc(r.key);
-  if(EDITING===r.key)return `<form class="editrow" data-editf="${k}"><input name="n" value="${esc(r.n)}" aria-label="שם הפריט"><input name="q" value="${esc(r.q)}" aria-label="כמות" placeholder="כמות" ${r.extra?'hidden':''}><div class="erb"><button type="submit">שמירה</button><button type="button" data-editcancel>ביטול</button><button type="button" class="dng" data-editdel="${k}">הסרה</button></div></form>`;
-  return `<div class="xrow"><button class="item${DONE.has(r.key)?' done':''}" data-check data-name="${k}"><span class="check"></span><span class="nm">${esc(r.n)}</span><span class="q">${esc(r.q)}</span></button><button class="xdel" data-edit="${k}" aria-label="עריכת ${esc(r.n)}">✎</button></div>`};
-function shopHTML(){return shopData().map(([g,rows])=>`<div class="group"><h5>${g}</h5>${rows.map(shopRow).join('')}</div>`).join('')}
+  if(EDITING===r.key)return `<form class="editrow" data-editf="${k}"><input name="n" value="${esc(r.n)}" aria-label="${tr('שם הפריט')}"><input name="q" value="${esc(r.q)}" aria-label="${tr('כמות')}" placeholder="${tr('כמות')}" ${r.extra?'hidden':''}><div class="erb"><button type="submit">${tr('שמירה')}</button><button type="button" data-editcancel>${tr('ביטול')}</button><button type="button" class="dng" data-editdel="${k}">${tr('הסרה')}</button></div></form>`;
+  return `<div class="xrow"><button class="item${DONE.has(r.key)?' done':''}" data-check data-name="${k}"><span class="check"></span><span class="nm">${esc(r.n)}</span><span class="q">${esc(r.q)}</span></button><button class="xdel" data-edit="${k}" aria-label="${tr('עריכת {0}',esc(r.n))}">✎</button></div>`};
+function shopHTML(){return shopData().map(([g,rows])=>`<div class="group"><h5>${tr(g)}</h5>${rows.map(shopRow).join('')}</div>`).join('')}
 /* ---------- detailed recipes: amounts scale with the people left on each dish ---------- */
 const rq=x=>Math.round(x*4)/4;
 const frac=q=>{const w=Math.floor(q+1e-9),r=Math.round((q-w)*4)/4;const f={0:'',.25:'¼',.5:'½',.75:'¾'}[r];return w?`${w}${f}`:f};
-const T=t=>{if(t>=3){const q=Math.max(1,Math.round(t/3*2)/2);return q===1?'כף':`${frac(q)} כפות`}const q=Math.max(.25,rq(t));return q===1?'כפית':q<1?`${frac(q)} כפית`:`${frac(q)} כפיות`};
-const Cp=c=>{const q=Math.max(.25,rq(c));return q===1?'כוס':q<1?`${frac(q)} כוס`:`${frac(q)} כוסות`};
-const Nu=(x,one,many)=>{const c=Math.max(1,Math.ceil(x-1e-9));return `${c} ${c===1?one:many}`};
-const LM=h=>{const n=Math.ceil(h/2-1e-9);return h<=1?'חצי לימון':n===1?'לימון':`${n} לימונים`};
+const T_HE=t=>{if(t>=3){const q=Math.max(1,Math.round(t/3*2)/2);return q===1?'כף':`${frac(q)} כפות`}const q=Math.max(.25,rq(t));return q===1?'כפית':q<1?`${frac(q)} כפית`:`${frac(q)} כפיות`};
+const Cp_HE=c=>{const q=Math.max(.25,rq(c));return q===1?'כוס':q<1?`${frac(q)} כוס`:`${frac(q)} כוסות`};
+const Nu_HE=(x,one,many)=>{const c=Math.max(1,Math.ceil(x-1e-9));return `${c} ${c===1?one:many}`};
+const LM_HE=h=>{const n=Math.ceil(h/2-1e-9);return h<=1?'חצי לימון':n===1?'לימון':`${n} לימונים`};
 const kgT=m=>fmtQ(m,'kg');
-const R={
+/* English measures and plurals for the recipes */
+const T_EN=t=>{if(t>=3){const q=Math.max(1,Math.round(t/3*2)/2);return `${frac(q)} tbsp`}const q=Math.max(.25,rq(t));return `${frac(q)} tsp`};
+const Cp_EN=c=>{const q=Math.max(.25,rq(c));return `${frac(q)} ${q<=1?'cup':'cups'}`};
+const Nu_EN=(x,one,many)=>{const c=Math.max(1,Math.ceil(x-1e-9));return `${c} ${c===1?one:many}`};
+const LM_EN=h=>{const n=Math.ceil(h/2-1e-9);return h<=1?'half a lemon':n===1?'1 lemon':`${n} lemons`};
+const T=IS_HE?T_HE:T_EN,Cp=IS_HE?Cp_HE:Cp_EN,Nu=IS_HE?Nu_HE:Nu_EN,LM=IS_HE?LM_HE:LM_EN;
+const R_HE={
  schnitzel:{w:.3,eq:mi=>'קרש חיתוך, סכין, 3 צלחות עמוקות, נייר סופג, '+(mi===0?'מחבת רחבה':'תבנית ונייר אפייה, ספריי שמן')+(mi===2?', שקית סגורה ומערוך':''),
   need:(m,p,cnt,mi)=>[['חזה עוף',Nu(p,'חצי חזה','חצאי חזה')],['יוצא בערך',`${Math.ceil(p-1e-9)*3} פרוסות`],['קמח',Cp(m)],['ביצים',Nu(m*2,'ביצה','ביצים')],mi===2?['קורנפלקס',Cp(m*2.5)]:['פירורי לחם',Cp(m*1.5)],['מלח',T(m*1)],['פפריקה',T(m*.5)],['פלפל שחור',T(m*.25)],mi===0?['שמן לטיגון','כמות שתכסה את המחבת בגובה 1 ס״מ']:['ספריי שמן','בקבוק אחד']],
   steps:(m,p,cnt,mi)=>{const c=mi===2?`${Cp(m*2.5)} קורנפלקס (מועכים בשקית סגורה עם מערוך, עד פירורים גסים)`:`${Cp(m*1.5)} פירורי לחם`;
@@ -566,25 +875,94 @@ const R={
   steps:(m,p,cnt)=>[`שוטפים את הירקות. חותכים ${Nu(p,'מלפפון','מלפפונים')} ו-${Nu(cnt*.7,'עגבנייה','עגבניות')} לקוביות של 1 ס״מ.`,`בקערה: הירקות, ${T(cnt*1.5)} שמן זית, ${T(cnt*1)} מיץ לימון ו-${T(cnt*.25)} מלח.`,`מערבבים רגע לפני ההגשה.`],
   done:'טועמים: קצת מלח ולימון, לפי הטעם.'}
 };
+/* ======== English recipes: same dishes, amounts and structure as the Hebrew ones; oven in °C and °F, lengths in cm and inches ======== */
+const O220='220°C (425°F)',O200='200°C (400°F)',O100='100°C (210°F)';
+const R_EN={
+ schnitzel:{w:.3,eq:mi=>'cutting board, knife, 3 shallow dishes, paper towels, '+(mi===0?'wide frying pan':'baking sheet, parchment paper, oil spray')+(mi===2?', zip-top bag and rolling pin':''),
+  need:(m,p,cnt,mi)=>[['Chicken breast',Nu(p,'breast half','breast halves')],['Makes about',`${Math.ceil(p-1e-9)*3} cutlets`],['Flour',Cp(m)],['Eggs',Nu(m*2,'egg','eggs')],mi===2?['Cornflakes',Cp(m*2.5)]:['Breadcrumbs',Cp(m*1.5)],['Salt',T(m*1)],['Paprika',T(m*.5)],['Black pepper',T(m*.25)],mi===0?['Frying oil','enough to fill the pan 1 cm (½ in) deep']:['Oil spray','1 bottle']],
+  steps:(m,p,cnt,mi)=>{const c=mi===2?`${Cp(m*2.5)} cornflakes (crush them in a zip-top bag with a rolling pin until coarse crumbs)`:`${Cp(m*1.5)} breadcrumbs`;
+   return [`Place ${Nu(p,'chicken breast half','chicken breast halves')} on the board. Slice each half lengthwise into 3 cutlets, each about 1 cm (½ in) thick, a finger's width. ${Math.ceil(p-1e-9)*3} cutlets in all.`,`If a cutlet is thicker: cover it with parchment paper and pound gently with a glass bottle until even.`,`Set up 3 dishes in a row: (1) ${Cp(m)} flour. (2) ${Nu(m*2,'egg','eggs')}, beaten with ${T(m*1)} salt, ${T(m*.5)} paprika and ${T(m*.25)} pepper. (3) ${c}.`,`For each cutlet: flour (shake off the excess), egg (lift it so the excess drips off), crumbs (press with your palm on both sides).`].concat(mi===0?[`Pour oil into the pan 1 cm (½ in) deep and heat over medium-high (7 out of 10) for about 3 minutes. Test: a crumb dropped in sizzles right away.`,`Fry 3 to 4 minutes per side until golden. 3 or 4 cutlets at a time, so the pan doesn't crowd.`,`Move to a plate lined with paper towels. To keep warm: oven at ${O100} until serving.`]:[`Heat the oven to ${O220}. Line a baking sheet with parchment paper and spray the paper with oil.`,`Arrange the cutlets in a single layer and spray the tops too.`,`Bake 12 minutes, flip, spray again, and bake another 8 to 10 minutes.`])},
+  done:'No pink inside: cut into the thickest cutlet and check.'},
+ wings:{w:.05,eq:mi=>mi===1?'grill grate, tongs, large bowl, paper towels':'baking sheet, parchment paper, large bowl, paper towels',
+  need:(m,p,cnt,mi)=>[['Chicken wings',Nu(p,'wing','wings')],['Paprika',T(m*2)],['Salt',T(m*1.5)],['Black pepper',T(m*.5)],['Oil',T(m*3)]].concat(mi===1?[['Charcoal','1 bag'],['Long lighter','1']]:[]),
+  steps:(m,p,cnt,mi)=>{const pre=[`Pat each wing very dry with paper towels. A dry wing comes out crisp.`,`In a large bowl: ${Nu(p,'wing','wings')}, ${T(m*3)} oil, ${T(m*2)} paprika, ${T(m*1.5)} salt and ${T(m*.5)} pepper. Mix with your hands until every wing is coated.`];
+   return mi===1?pre.concat([`Light the charcoal in a pile 30 minutes ahead. It's ready when it's gray on the outside and glowing, with no flame.`,`Spread the coals and set the grate high, about 15 cm (6 in) above them.`,`Place the wings on the grate. 8 minutes per side, turning 3 to 4 times. If there's a flame, move the wings to the side.`]):
+   [`Heat the oven to ${O220} (top and bottom heat).`].concat(pre,[`Baking sheet with parchment paper. Wings in a single layer, a finger's width apart.`,`Bake 20 minutes. Flip each wing. Another 15 to 20 minutes.`])},
+  done:'Deep golden and crisp. Cut into the thickest wing: no pink and the juices run clear.'},
+ pargit:{w:.125,eq:mi=>'bowl, '+['heavy skillet','baking sheet and parchment paper','grill grate'][mi]+', tongs',
+  need:(m,p,cnt,mi)=>[['Chicken thighs (pargiyot)',Nu(p,'thigh','thighs')],['Oil',T(m*6)],['Lemon juice',Nu(m,'lemon','lemons')],['Paprika',T(m*2)],['Salt',T(m*1)],['Black pepper',T(m*.5)]].concat(mi===2?[['Charcoal','1 bag'],['Long lighter','1']]:[]),
+  steps:(m,p,cnt,mi)=>[`You have ${Nu(p,'thigh','thighs')}. Open each one up so it lies flat, 2 cm (¾ in) thick. If it's too thick: slice through the middle lengthwise, almost to the edge, and open it like a book.`,`In a bowl mix: ${T(m*6)} oil, the juice of ${Nu(m,'lemon','lemons')}, ${T(m*2)} paprika, ${T(m*1)} salt and ${T(m*.5)} pepper.`,`Coat the thighs. Cover and refrigerate at least 1 hour (you can do it in the morning).`].concat(mi===0?[`Heat a heavy skillet over medium-high for 2 minutes. Don't add oil, there's some in the marinade.`,`5 to 6 minutes per side without moving, until you get brown grill marks. Flip only once.`]:mi===1?[`Heat the oven to ${O220}. Baking sheet with parchment paper, thighs in a single layer.`,`12 to 15 minutes, flipping halfway.`]:[`Light the charcoal 30 minutes ahead. It's ready when it's gray on the outside and glowing.`,`Place the thighs on the grate. 5 to 6 minutes per side, flip once.`]),
+  done:'Cut into the thickest thigh: no pink and the juices run clear.'},
+ roast:{w:.35,eq:mi=>mi===1?'grill grate, tongs':'baking sheet and parchment paper',
+  need:(m,p,cnt,mi)=>[['Chicken leg quarters',`${Math.ceil(p-1e-9)}`],['Oil',T(m*6)],['Paprika',T(m*2)],['Salt',T(m*1)],['Black pepper',T(m*.5)],['Lemon',LM(Math.ceil(p/2))]].concat(mi===1?[['Charcoal','1 bag'],['Long lighter','1']]:[]),
+  steps:(m,p,cnt,mi)=>[`A leg quarter is the thigh and drumstick together. Pat ${Nu(p,'leg quarter','leg quarters')} dry with paper towels. Cut 2 small diagonal slits in the skin of each one, down to the meat.`,`Mix on a plate: ${T(m*2)} paprika, ${T(m*1)} salt, ${T(m*.5)} pepper. Rub it on the legs, then ${T(m*6)} oil. No onion or garlic.`].concat(mi===1?[`Light the charcoal 30 minutes ahead. Pile it on one side of the grill.`,`Legs on the grate on the side without coals, skin side down, 20 minutes. Flip and cook another 25 minutes. Cover if you have a lid.`]:[`Heat the oven to ${O200}.`,`Baking sheet with parchment paper, skin side up. Bake 50 to 60 minutes. Flip after 25 minutes and return skin side up.`]).concat([`Squeeze lemon over them at the end.`]),
+  done:'Pierce the thickest spot next to the bone: the juices run clear, no pink.'},
+ salmon:{w:.2,eq:mi=>mi===1?'skillet, spatula':'baking sheet and parchment paper',
+  need:(m,p,cnt,mi)=>[['Salmon',Nu(p,'fillet','fillets')],['Oil',T(p*1)],['Salt',T(p*.25)],['Black pepper','a pinch'],['Lemon',LM(p)]],
+  steps:(m,p,cnt,mi)=>mi===1?[`Pat the fillets dry with paper towels and season each with ${T(.25)} salt and a pinch of pepper.`,`Skillet over medium heat with ${T(1)} oil per fillet. When the oil is hot, place the fillets in skin side down.`,`5 minutes without moving. Flip and cook another 3 to 4 minutes.`,`Squeeze lemon over them at the end.`]:[`Heat the oven to ${O200}.`,`Baking sheet with parchment paper. Fillets skin side down.`,`On each fillet: ${T(1)} oil, ${T(.25)} salt and a pinch of pepper. A thin lemon slice on top.`,`Bake 12 minutes (10 if the fillet is thinner than 2 cm / ¾ in).`],
+  done:'The flesh turns from translucent pink to light pink and flakes easily with a fork.'},
+ rice:{w:1,eq:'pot with a lid, strainer',
+  need:(m)=>[['White rice',Cp(m*5)],['Water',Cp(m*10)],['Salt',T(m*2.5)],['Oil',T(m*5)]],
+  steps:(m)=>[`Rinse ${Cp(m*5)} rice in a strainer under running water 2 times, until the water is almost clear.`,`In the pot: ${T(m*5)} oil and the rice. Stir for a minute over medium heat.`,`Add ${Cp(m*10)} boiling water and ${T(m*2.5)} salt. Stir once.`,`Cover. Lowest heat, 15 minutes. Don't lift the lid!`,`Turn off the heat and leave it covered another 5 minutes. Fluff with a fork.`],
+  done:'Every grain is separate and there is no water left at the bottom.'},
+ puree:{w:.18,eq:'pot, potato masher (or a fork), colander',
+  need:(m,p)=>[['Potatoes',Nu(p,'medium potato','medium potatoes')],['Dairy-free margarine',`${Math.round(m*50)} g`],['Salt',T(m*1)],['Water','to cover']],
+  steps:(m,p)=>[`Peel ${Nu(p,'medium potato','medium potatoes')} and cut each into about 6 cubes (3 cm / 1 in, about the size of half an egg). Even cubes cook at the same rate.`,`In the pot: potatoes, cold water to cover, ${T(m*1)} salt.`,`Bring to a boil, then lower to medium heat. 15 to 20 minutes.`,`Drain, but save half a cup of the cooking water.`,`Return to the pot and mash. Add ${Math.round(m*50)} g margarine. Add the water slowly until the mash is smooth.`],
+  done:'A knife slides into a cube with no resistance.'},
+ cauli:{w:1,eq:mi=>mi===1?'pot with a lid, strainer':'baking sheet and parchment paper, bowl',
+  need:(m,p,cnt,mi)=>[['Cauliflower',Nu(m,'head','heads')],mi===1?['Olive oil',T(m*2)]:['Oil',T(m*6)],['Salt',T(m*1)]],
+  steps:(m,p,cnt,mi)=>mi===1?[`Cut off the stem and break the head into walnut-sized florets (3 to 4 cm / 1 to 1½ in). Rinse.`,`In the pot: 2 cm (¾ in) of water and ${T(m*1)} salt. Bring to a boil.`,`Add the florets, cover, 8 to 10 minutes.`,`Drain and add ${T(m*2)} olive oil.`]:[`Heat the oven to ${O220}.`,`Cut off the stem and break the head into walnut-sized florets (3 to 4 cm / 1 to 1½ in).`,`Rinse and dry very well with a towel.`,`In a bowl: florets, ${T(m*6)} oil, ${T(m*1)} salt. Mix with your hands.`,`Baking sheet with parchment paper, single layer. 25 to 30 minutes, turning halfway.`],
+  done:'A knife slides in easily, and in the oven the edges are browned too.'},
+ potato:{w:.18,eq:'baking sheet, parchment paper',
+  need:(m,p)=>[['Potatoes',Nu(p,'medium potato','medium potatoes')],['Oil',T(m*3)],['Salt',T(m*1)]],
+  steps:(m,p)=>[`Heat the oven to ${O200}. Little oil, no onion or garlic.`,`Rinse and peel. Cut each potato into 8 pieces, about a finger thick.`,`Dry them, then toss in a bowl with ${T(m*3)} oil and ${T(m*1)} salt.`,`Baking sheet with parchment paper. 40 minutes, turning after 20.`],
+  done:'Brown outside and tender when pierced.'},
+ fries:{w:1,eq:'baking sheet, parchment paper',
+  need:(m,p)=>[['Frozen fries',Nu(p,'bag','bags')],['Salt','after baking']],
+  steps:()=>[`Heat the oven to ${O220}.`,`Spread them straight from the freezer in a single layer, no thawing.`,`20 to 25 minutes. Flip halfway.`,`Salt only at the end.`],
+  done:'Golden and crisp.'},
+ beans:{w:.5,eq:'pot, strainer, bowl of cold water',
+  need:(m,p)=>[['Green beans',Nu(p,'bag','bags')],['Salt',T(m*10)],['Olive oil',T(m*6)]],
+  steps:(m)=>[`If fresh: snap off the tough ends.`,`Bring a pot of water to a boil with ${T(m*10)} salt. Add the beans.`,`4 to 5 minutes (frozen: 6 minutes).`,`Drain and move to a bowl of cold water for a minute, to keep the color.`,`Drain, then add ${T(m*6)} olive oil and salt.`],
+  done:'Bright green, tender but with a little bite.'},
+ mayo:{w:.18,eq:'pot, bowl, knife',
+  need:(m,p,cnt)=>{const e=Math.max(1,Math.ceil(cnt*.5-1e-9));return [['Potatoes',Nu(p,'medium potato','medium potatoes')],['Eggs',`${e}`],['Mayonnaise',T(m*15)],['Pickles',Nu(m*3,'pickle','pickles')],['Salt',T(m*.5)],['Black pepper',T(m*.25)]]},
+  steps:(m,p,cnt)=>{const e=Math.max(1,Math.ceil(cnt*.5-1e-9));return [`Peel ${Nu(p,'medium potato','medium potatoes')} and cut each into 8 cubes (2 cm / ¾ in). Cover with cold salted water and cook 15 minutes from the moment it boils.`,`Eggs: lower them gently with a spoon into boiling water. ${e} ${e===1?'egg':'eggs'}, exactly 10 minutes. Straight into cold water.`,`Chill everything completely (half an hour in the fridge), or the mayo will melt.`,`Peel the eggs. Cut them into 1 cm (½ in) cubes, and do the same with ${Nu(m*3,'pickle','pickles')}.`,`Mix everything with ${T(m*15)} mayonnaise, ${T(m*.5)} salt and ${T(m*.25)} pepper. No onion.`,`Chill for an hour before serving.`]},
+  done:'Taste it: if it is dry, add another spoonful of mayo.'},
+ slaw:{w:1,eq:'sharp knife or grater, bowl',
+  need:(m,p)=>[['Purple cabbage',p<.7?'half a head':Nu(p,'head','heads')],['Carrots',Nu(m*3,'carrot','carrots')],['Mayonnaise',T(m*12)],['Vinegar',T(m*3)],['Sugar',T(m*1)],['Salt',T(m*.5)]],
+  steps:(m)=>[`Cut the cabbage into quarters and remove the tough core. Slice paper-thin (or use a coarse grater).`,`Grate ${Nu(m*3,'carrot','carrots')} on a coarse grater.`,`In a small bowl: ${T(m*12)} mayonnaise, ${T(m*3)} vinegar, ${T(m*1)} sugar, ${T(m*.5)} salt.`,`Add it to the cabbage and squeeze with your hands for a minute, to soften it.`,`Chill at least half an hour.`],
+  done:'Taste it: sweet and sour with a little salt.'},
+ cherry:{w:.4,eq:'knife, bowl',
+  need:(m,p,cnt)=>[['Cherry tomatoes',Nu(p,'box','boxes')],['Cilantro',Nu(cnt*.15,'bunch','bunches')],['Olive oil',T(m*6)],['Lemon juice',T(m*3)],['Salt',T(m*.5)]],
+  steps:(m)=>[`Rinse the tomatoes and dry them. Cut each one in half.`,`Rinse the cilantro and shake it dry. Chop the leaves and thin stems into ½ cm (¼ in) pieces.`,`In a bowl: tomatoes, cilantro, ${T(m*6)} olive oil, ${T(m*3)} lemon juice, ${T(m*.5)} salt.`,`Toss right before serving, because the salt draws out water.`],
+  done:'Taste it: you should clearly taste the cilantro.'},
+ chopped:{w:1,eq:'knife, bowl',
+  need:(m,p,cnt)=>[['Cucumbers',Nu(p,'cucumber','cucumbers')],['Tomatoes',Nu(cnt*.7,'tomato','tomatoes')],['Olive oil',T(cnt*1.5)],['Lemon juice',T(cnt*1)],['Salt',T(cnt*.25)]],
+  steps:(m,p,cnt)=>[`Rinse the vegetables. Cut ${Nu(p,'cucumber','cucumbers')} and ${Nu(cnt*.7,'tomato','tomatoes')} into 1 cm (½ in) cubes.`,`In a bowl: the vegetables, ${T(cnt*1.5)} olive oil, ${T(cnt*1)} lemon juice and ${T(cnt*.25)} salt.`,`Toss right before serving.`],
+  done:'Taste it: a little more salt or lemon, to your liking.'}
+};
+const R=IS_HE?R_HE:R_EN;
 const ytLink=q=>`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`;
-const recipeBody=id=>{const d=D[id],r=R[id];if(!r)return '<p class="eq">אין עדיין מתכון למנה הזאת.</p>';if(!d.who.length)return '<p class="eq">אף אחד לא מסומן למנה הזאת, אז אין כמויות.</p>';
+const recipeBody=id=>{const d=D[id],r=R[id];if(!r)return `<p class="eq">${tr('אין עדיין מתכון למנה הזאת.')}</p>`;if(!d.who.length)return `<p class="eq">${tr('אף אחד לא מסומן למנה הזאת, אז אין כמויות.')}</p>`;
   const cnt=d.who.length,p=ING[id][0][3]*cnt,K=p*(r.w||1),mi=d.mi||0,meth=DISH[id].M[mi];
-  return `<p class="rm">${cnt} ${cnt===1?'איש':'אנשים'} · ${meth.n} · ${meth.t}</p>
-   <h6>מה צריך</h6><ul class="need">${r.need(K,p,cnt,mi).map(([n,a])=>`<li><span>${n}</span><b>${a}</b></li>`).join('')}</ul>
-   <h6>ציוד</h6><p class="eq">${typeof r.eq==='function'?r.eq(mi):r.eq}</p>
-   <h6>שלבים</h6><ol>${r.steps(K,p,cnt,mi).map(s=>`<li>${s}</li>`).join('')}</ol>
-   <p class="done-line">מוכן כש: ${r.done}</p>
-   <a class="vid" href="${ytLink(d.n+' '+meth.n+' מתכון צעד אחר צעד')}" target="_blank" rel="noopener">▶ חיפוש סרטון ביוטיוב</a>`};
-const metaHTML=id=>{const cnt=D[id].who.length;if(!cnt)return '';const [n,,u,per,fixed]=ING[id][0];return `${cnt} ${cnt===1?'איש':'אנשים'} · לקנות ${fmtQ(fixed?per:per*cnt,u)}${u==='kg'?' '+n:''}`};
+  return `<p class="rm">${cnt} ${cnt===1?tr('איש'):tr('אנשים')} · ${meth.n} · ${meth.t}</p>
+   <h6>${tr('מה צריך')}</h6><ul class="need">${r.need(K,p,cnt,mi).map(([n,a])=>`<li><span>${n}</span><b>${a}</b></li>`).join('')}</ul>
+   <h6>${tr('ציוד')}</h6><p class="eq">${typeof r.eq==='function'?r.eq(mi):r.eq}</p>
+   <h6>${tr('שלבים')}</h6><ol>${r.steps(K,p,cnt,mi).map(s=>`<li>${s}</li>`).join('')}</ol>
+   <p class="done-line">${tr('מוכן כש: {0}',r.done)}</p>
+   <a class="vid" href="${ytLink(d.n+' '+meth.n+tr(' מתכון צעד אחר צעד'))}" target="_blank" rel="noopener">▶ ${tr('חיפוש סרטון ביוטיוב')}</a>`};
+const metaHTML=id=>{const cnt=D[id].who.length;if(!cnt)return '';const [n,,u,per,fixed]=ING[id][0];return `${cnt} ${cnt===1?tr('איש'):tr('אנשים')} · ${tr('לקנות {0}',fmtQ(fixed?per:per*cnt,u))}${u==='kg'?' '+n:''}`};
 const K = ['עיקריות','תוספות','סלטים'];
 const byCat = c => Object.entries(D).filter(([,d])=>d.c===c);
-const rowHTML = id => { const d=D[id]; return `<div class="row${d.alt&&!d.who.length?' hide':''}" data-row="${id}"><b>${d.n}</b><p class="meta">${metaHTML(id)}</p><div class="who">${whoHTML(id)}</div><details class="rd" data-rd="${id}"><summary>איך מכינים <span class="arr">⌄</span></summary><div class="rb">${recipeBody(id)}</div></details></div>` };
-const whoHTML = id => D[id].who.length ? D[id].who.map(w=>`<span class="pill"><button class="pn" data-pref-open="${w}">${w}</button><button data-rm="${id}|${w}" aria-label="להוריד את ${w} מ${D[id].n}">×</button></span>`).join('') : '<span class="empty-who">אף אחד לא מסומן למנה הזאת</span>';
+const rowHTML = id => { const d=D[id]; return `<div class="row${d.alt&&!d.who.length?' hide':''}" data-row="${id}"><b>${d.n}</b><p class="meta">${metaHTML(id)}</p><div class="who">${whoHTML(id)}</div><details class="rd" data-rd="${id}"><summary>${tr('איך מכינים')} <span class="arr">⌄</span></summary><div class="rb">${recipeBody(id)}</div></details></div>` };
+const whoHTML = id => D[id].who.length ? D[id].who.map(w=>`<span class="pill"><button class="pn" data-pref-open="${w}">${w}</button><button data-rm="${id}|${w}" aria-label="${tr('להוריד את {0} מ{1}',w,D[id].n)}">×</button></span>`).join('') : `<span class="empty-who">${tr('אף אחד לא מסומן למנה הזאת')}</span>`;
 const bar = t => `<div class="status"><span>9:41</span><span>${t||''}</span></div>`;
 
 /* ---------- the table picture ---------- */
 const INFO=Object.fromEntries(GUESTS.map(n=>[n,['',(S.txt[n]||'').trim(),kept(n,'avoid').length?1:0]]));
-const KIDS=new Set(['אלירן','עידו','הילה']);
+const KIDS_HE=new Set(['אלירן','עידו','הילה']);
+const KIDS=IS_HE?KIDS_HE:KIDS_EN;
 const SHIRT=['#d1572f','#4f7a58','#6b8fc4','#c4a24f','#9a6bb0','#d98aa0','#3f8f93','#8a6b4f','#c46b6b','#5b6b9a'];
 const HAIR=['#b9b3a8','#8a8f95','#3b2a20','#2a211b','#6b4a2f','#2a211b','#8a5a2f','#3b2a20','#5a3a24','#2a211b'];
 const CATCOL={'עיקריות':'#d1572f','תוספות':'#e0b44a','סלטים':'#6fa56c'};
@@ -614,27 +992,27 @@ function tableSVG(){
   const ds=Object.entries(D).filter(([,d])=>d.who.length);
   const dishes=ds.map(([id,d],k)=>{const col=k%5,row=Math.floor(k/5);const x=108+col*36,y=150+row*22;
     return `<g class="dish${SEL&&SEL.t==='d'&&SEL.id===id?' sel':''}" data-dish="${id}" role="button" tabindex="0" aria-label="${d.n}"><ellipse cx="${x}" cy="${y}" rx="17" ry="10" fill="transparent"/><ellipse cx="${x}" cy="${y}" rx="14" ry="8" fill="#fff" stroke="#e2d6c4"/><ellipse cx="${x}" cy="${y}" rx="10" ry="5.5" fill="${CATCOL[d.c]}"/></g>`}).join('');
-  return `<svg viewBox="0 0 360 330" class="tsvg" aria-label="שולחן הארוחה"><rect x="80" y="105" width="200" height="130" rx="20" fill="#e9d3b4" stroke="#d3b78f" stroke-width="2"/><rect x="88" y="113" width="184" height="114" rx="14" fill="#f4e6cf" opacity=".7"/>${dishes}${g}</svg>`}
+  return `<svg viewBox="0 0 360 330" class="tsvg" aria-label="${tr('שולחן הארוחה')}"><rect x="80" y="105" width="200" height="130" rx="20" fill="#e9d3b4" stroke="#d3b78f" stroke-width="2"/><rect x="88" y="113" width="184" height="114" rx="14" fill="#f4e6cf" opacity=".7"/>${dishes}${g}</svg>`}
 function cardHTML(){
-  if(!SEL)return `<p class="hint">לחצי על אדם או על מנה על השולחן</p>`;
-  if(SEL.t==='d'){const d=D[SEL.id];return `<h3>${d.n}</h3><p class="rm">${d.c} · מוגש ל-${d.who.length} ${d.who.length===1?'איש':'אנשים'}</p><div class="who">${d.who.map(w=>`<span class="pill">${w}</span>`).join('')}</div>`}
+  if(!SEL)return `<p class="hint">${tr('לחצי על אדם או על מנה על השולחן')}</p>`;
+  if(SEL.t==='d'){const d=D[SEL.id];return `<h3>${d.n}</h3><p class="rm">${tr(d.c)} · ${tr('מוגש ל-')}${d.who.length} ${d.who.length===1?tr('איש'):tr('אנשים')}</p><div class="who">${d.who.map(w=>`<span class="pill">${w}</span>`).join('')}</div>`}
   const nm=SEL.id,inf=INFO[nm],mine=Object.entries(D).filter(([,d])=>d.who.includes(nm));
   return `<h3>${nm} <span class="rm">${inf[0]?"· "+inf[0]:""}</span></h3>
-   <p class="rm">סמני וי ליד מה שהוא אוכל. השינוי מתעדכן בתפריט ובקניות.</p>
-   <label class="lbl">הערה</label><textarea data-note="${nm}" rows="2">${inf[1]}</textarea>
-   ${K.map(c=>`<h5>${c}</h5>`+byCat(c).map(([id,d])=>`<button class="item${d.who.includes(nm)?' done':''}" data-pref="${id}|${nm}"><span class="check"></span><span class="nm">${d.n}</span></button>`).join('')).join('')}
-   <label class="lbl">להוסיף עוד משהו שהוא אוהב</label><form class="likeform" data-like="${nm}"><input name="x" type="text" dir="auto" enterkeyhint="done" autocomplete="off" placeholder="למשל: קציצות, סלט כרוב" aria-label="להוסיף מאכל אהוב"><button type="submit">הוספה</button></form><p class="likemsg" id="likemsg"></p>`}
+   <p class="rm">${tr('סמני וי ליד מה שהוא אוכל. השינוי מתעדכן בתפריט ובקניות.')}</p>
+   <label class="lbl">${tr('הערה')}</label><textarea data-note="${nm}" rows="2">${inf[1]}</textarea>
+   ${K.map(c=>`<h5>${tr(c)}</h5>`+byCat(c).map(([id,d])=>`<button class="item${d.who.includes(nm)?' done':''}" data-pref="${id}|${nm}"><span class="check"></span><span class="nm">${d.n}</span></button>`).join('')).join('')}
+   <label class="lbl">${tr('להוסיף עוד משהו שהוא אוהב')}</label><form class="likeform" data-like="${nm}"><input name="x" type="text" dir="auto" enterkeyhint="done" autocomplete="off" placeholder="${tr('למשל: קציצות, סלט כרוב')}" aria-label="${tr('להוסיף מאכל אהוב')}"><button type="submit">${tr('הוספה')}</button></form><p class="likemsg" id="likemsg"></p>`}
 function tableHTML(){
   const n=present().length,dn=Object.values(D).filter(d=>d.who.length).length;
-  return `<div class="counts"><div><b>${n}</b>אנשים</div><div><b>${n}</b>כיסאות</div><div><b>${n}</b>צלחות</div><div><b>${n}</b>כוסות</div><div><b>${dn}</b>מנות</div></div>${tableSVG()}<div class="tcard" id="tcard">${cardHTML()}</div>`}
+  return `<div class="counts"><div><b>${n}</b>${tr('אנשים')}</div><div><b>${n}</b>${tr('כיסאות')}</div><div><b>${n}</b>${tr('צלחות')}</div><div><b>${n}</b>${tr('כוסות')}</div><div><b>${dn}</b>${tr('מנות')}</div></div>${tableSVG()}<div class="tcard" id="tcard">${cardHTML()}</div>`}
 function openPrefs(name){
   stage.querySelector('.sheet')?.remove();
   const inf=INFO[name],p=stage.querySelector('.phone'),sh=document.createElement('div');sh.className='sheet';
-  sh.innerHTML=`<div class="sheet-in"><h2>מה ${name} אוכל? <button data-close aria-label="סגירה">×</button></h2><p class="rm">${inf[0]?inf[0]+". ":""}סמני מה כן, ובטלי מה לא. הכמויות מתעדכנות.</p>
-   <label class="lbl">הערה (אופציונלי)</label><textarea data-note="${name}" rows="2">${inf[1]}</textarea>
-   <label class="lbl">להוסיף משהו שהוא או היא אוהבים</label><form class="likeform" data-like="${name}"><input name="x" type="text" dir="auto" enterkeyhint="done" autocomplete="off" placeholder="למשל: שניצל, קציצות, סלט כרוב" aria-label="להוסיף מאכל אהוב"><button type="submit">הוספה</button></form><p class="likemsg" id="likemsg"></p>
-   ${K.map(c=>`<h5>${c}</h5>`+byCat(c).map(([id,d])=>`<button class="item${d.who.includes(name)?' done':''}" data-pref="${id}|${name}"><span class="check"></span><span class="nm">${d.n}</span></button>`).join('')).join('')}
-   <button class="cta2" data-close>סיום</button><button class="reset" data-reset>איפוס להצעה המקורית</button></div>`;
+  sh.innerHTML=`<div class="sheet-in"><h2>${tr('מה {0} אוכל?',name)} <button data-close aria-label="${tr('סגירה')}">×</button></h2><p class="rm">${inf[0]?inf[0]+". ":""}${tr('סמני מה כן, ובטלי מה לא. הכמויות מתעדכנות.')}</p>
+   <label class="lbl">${tr('הערה (אופציונלי)')}</label><textarea data-note="${name}" rows="2">${inf[1]}</textarea>
+   <label class="lbl">${tr('להוסיף משהו שהוא או היא אוהבים')}</label><form class="likeform" data-like="${name}"><input name="x" type="text" dir="auto" enterkeyhint="done" autocomplete="off" placeholder="${tr('למשל: שניצל, קציצות, סלט כרוב')}" aria-label="${tr('להוסיף מאכל אהוב')}"><button type="submit">${tr('הוספה')}</button></form><p class="likemsg" id="likemsg"></p>
+   ${K.map(c=>`<h5>${tr(c)}</h5>`+byCat(c).map(([id,d])=>`<button class="item${d.who.includes(name)?' done':''}" data-pref="${id}|${name}"><span class="check"></span><span class="nm">${d.n}</span></button>`).join('')).join('')}
+   <button class="cta2" data-close>${tr('סיום')}</button><button class="reset" data-reset>${tr('איפוס להצעה המקורית')}</button></div>`;
   sh.addEventListener('click',e=>{if(e.target===sh)sh.remove()});p.appendChild(sh)}
 function save(){saveMealState({who:Object.fromEntries(Object.entries(D).map(([i,d])=>[i,d.who])),gone:GONE,extra:EXTRA,done:[...DONE],edit:EDIT,notes:Object.fromEntries(Object.entries(INFO).map(([n,v])=>[n,v[1]]))})}
 function renderTable(){const e=stage.querySelector('#tbl');if(!e)return;if(SEL&&SEL.t==='p'&&GONE[SEL.id])SEL=null;e.innerHTML=tableHTML()}
@@ -645,22 +1023,22 @@ const old=document.getElementById('meal'),stage=old.cloneNode(false);old.replace
 const screen = () => `<div class="phone v2">
   <div class="scroll" id="sc">
    <div class="hero">${bar('').replace('class="status"','class="status" style="padding:0;color:#cbbdae"')}
-     <div class="navrow"><button class="backmenu" data-home>‹ לכל הארוחות</button><button class="backmenu" data-menu>לשינוי התפריט</button></div>
-     <small>COME OVER · שישי 30.10</small>
-     <h1 class="enter">ארוחת<br>שישי</h1>
+     <div class="navrow"><button class="backmenu" data-home>${tr('‹ לכל הארוחות')}</button><button class="backmenu" data-menu>${tr('לשינוי התפריט')}</button></div>
+     <small>${tr('COME OVER · שישי 30.10')}</small>
+     <h1 class="enter">${tr('ארוחת<br>שישי')}</h1>
      <p id="heroP">${heroP()}</p></div>
-   <nav role="tablist">${[["t","שולחן"],["m","תפריט"],["s","קניות"]].map(([k,n])=>`<button role="tab" data-tab="${k}" aria-selected="${k===TAB}">${n}</button>`).join('')}</nav>
-   <section id="t" ${TAB==='t'?'':'hidden'}><div class="num">01</div><h2>השולחן</h2><div id="tbl">${tableHTML()}</div>
-     <div class="group"><h5>מי מגיע · לחיצה על שם פותחת את ההעדפות שלו</h5><div class="who" id="guests">${guestsHTML()}</div></div></section>
-   <section id="m" ${TAB==='m'?'':'hidden'}><button class="backt" data-tab="t">‹ חזרה לשולחן</button><div class="num">02</div><h2>התפריט והמתכונים</h2>
-     ${K.map(c=>`<div class="group"><h5>${c}</h5>`+byCat(c).map(([id,d])=>rowHTML(id)).join('')+'</div>').join('')}
+   <nav role="tablist">${[["t",tr('שולחן')],["m",tr('תפריט')],["s",tr('קניות')]].map(([k,n])=>`<button role="tab" data-tab="${k}" aria-selected="${k===TAB}">${n}</button>`).join('')}</nav>
+   <section id="t" ${TAB==='t'?'':'hidden'}><div class="num">01</div><h2>${tr('השולחן')}</h2><div id="tbl">${tableHTML()}</div>
+     <div class="group"><h5>${tr('מי מגיע · לחיצה על שם פותחת את ההעדפות שלו')}</h5><div class="who" id="guests">${guestsHTML()}</div></div></section>
+   <section id="m" ${TAB==='m'?'':'hidden'}><button class="backt" data-tab="t">${tr('‹ חזרה לשולחן')}</button><div class="num">02</div><h2>${tr('התפריט והמתכונים')}</h2>
+     ${K.map(c=>`<div class="group"><h5>${tr(c)}</h5>`+byCat(c).map(([id,d])=>rowHTML(id)).join('')+'</div>').join('')}
    </section>
-   <section id="s" ${TAB==='s'?'':'hidden'}><button class="backt" data-tab="t">‹ חזרה לשולחן</button><div class="num">03</div><h2>רשימת קניות</h2>
+   <section id="s" ${TAB==='s'?'':'hidden'}><button class="backt" data-tab="t">${tr('‹ חזרה לשולחן')}</button><div class="num">03</div><h2>${tr('רשימת קניות')}</h2>
      <div id="shop">${shopHTML()}</div>
-     <form class="addform" data-add><input name="x" type="text" dir="auto" enterkeyhint="done" autocomplete="off" placeholder="להוסיף לרשימה (למשל: מפיות, 2 בקבוקי קולה)" aria-label="להוסיף פריט לרשימת הקניות"><button type="submit">הוספה</button></form>
-      <button class="cta" data-copy>העתיקי את הרשימה לוואטסאפ</button>
-   <button class="cta alt" data-serve>הוגש! שמרי את הארוחה</button>
-   <button class="linkq" data-home>‹ לכל הארוחות</button>
+     <form class="addform" data-add><input name="x" type="text" dir="auto" enterkeyhint="done" autocomplete="off" placeholder="${tr('להוסיף לרשימה (למשל: מפיות, 2 בקבוקי קולה)')}" aria-label="${tr('להוסיף פריט לרשימת הקניות')}"><button type="submit">${tr('הוספה')}</button></form>
+      <button class="cta" data-copy>${tr('העתיקי את הרשימה לוואטסאפ')}</button>
+   <button class="cta alt" data-serve>${tr('הוגש! שמרי את הארוחה')}</button>
+   <button class="linkq" data-home>${tr('‹ לכל הארוחות')}</button>
    </section>
   </div></div>`;
 if(S.restore){try{const e0=loadMeals().list.find(x=>x.id===CUR),j=e0&&e0.mealState;if(j){for(const i in j.who)if(D[i])D[i].who=j.who[i].filter(w=>GUESTS.includes(w));Object.assign(GONE,j.gone||{});EXTRA=(j.extra||[]).filter(x=>typeof x==='string');(j.done||[]).forEach(x=>DONE.add(x));Object.assign(EDIT,j.edit||{});for(const n in j.notes)if(INFO[n])INFO[n][1]=j.notes[n]}}catch(_){}S.restore=false}
@@ -668,7 +1046,7 @@ stage.innerHTML = screen();
 
 /* ---------- in-variant interactions ---------- */
 let toastTimer;
-function toast(msg,undo){stage.querySelector('.toast')?.remove();clearTimeout(toastTimer);const p=stage.querySelector('.phone');const t=document.createElement('div');t.className='toast';t.textContent=msg;if(undo){const b=document.createElement('button');b.textContent='ביטול';b.onclick=()=>{undo();t.remove()};t.appendChild(b)}p.appendChild(t);toastTimer=setTimeout(()=>t.remove(),undo?4000:1800)}
+function toast(msg,undo){stage.querySelector('.toast')?.remove();clearTimeout(toastTimer);const p=stage.querySelector('.phone');const t=document.createElement('div');t.className='toast';t.textContent=msg;if(undo){const b=document.createElement('button');b.textContent=tr('ביטול|undo');b.onclick=()=>{undo();t.remove()};t.appendChild(b)}p.appendChild(t);toastTimer=setTimeout(()=>t.remove(),undo?4000:1800)}
 function showTab(k){TAB=k;stage.querySelectorAll('nav [data-tab]').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===k));
   ['t','m','s'].forEach(x=>{const e=stage.querySelector('#'+x);if(e)e.hidden=x!==k});
   const sc=stage.querySelector('#sc'),nav=sc.querySelector('nav');sc.scrollTo({top:Math.max(0,nav.offsetTop),behavior:'instant'})}
@@ -678,15 +1056,15 @@ stage.addEventListener('submit',e=>{e.preventDefault();
   if(e.target.dataset.editf!==undefined){const k=e.target.dataset.editf,n=e.target.elements.n.value.trim(),q=e.target.elements.q.value.trim();
     if(!n)return;
     if(k.startsWith('x|'))EXTRA[+k.slice(2)]=n.slice(0,60);else EDIT[k]={n:n.slice(0,60),q:q.slice(0,40)};
-    EDITING=null;save();stage.querySelector('#shop').innerHTML=shopHTML();toast('נשמר');return}
+    EDITING=null;save();stage.querySelector('#shop').innerHTML=shopHTML();toast(tr('נשמר'));return}
   if(e.target.dataset.like){const nm=e.target.dataset.like,i=e.target.elements.x,v=i.value.trim();if(!v)return;
     const added=[],notes=[];
-    v.split(/,|\sו(?=\S)/).map(x=>x.trim()).filter(Boolean).forEach(it=>{let best=null,bl=0;CAT.forEach(d=>d.kw.forEach(k=>{if(it.includes(k)&&k.length>bl){best=d;bl=k.length}}));
+    v.split(RX.items).map(x=>x.trim()).filter(Boolean).forEach(it=>{const lo=it.toLowerCase();let best=null,bl=0;CAT.forEach(d=>d.kw.forEach(k=>{if(lo.includes(k)&&k.length>bl){best=d;bl=k.length}}));
       if(best&&D[best.id]){if(!D[best.id].who.includes(nm))D[best.id].who.push(nm);added.push(best.n)}else notes.push(it)});
-    if(notes.length){const n=INFO[nm];n[1]=(n[1]?n[1]+' ':'')+'אוהב/ת גם: '+notes.join(', ')+'.';}
+    if(notes.length){const n=INFO[nm];n[1]=(n[1]?n[1]+' ':'')+tr('אוהב/ת גם: ')+notes.join(', ')+'.';}
     i.value='';refreshAll();
-    stage.querySelector('#likemsg').textContent=(added.length?'נוסף: '+added.join(', ')+'. ':'')+(notes.length?'לא מצאתי מנה ל: '+notes.join(', ')+', שמרתי בהערה.':'');return}
-  const i=e.target.elements.x,v=i.value.trim();if(!v)return;EXTRA.push(v.slice(0,60));i.value='';save();stage.querySelector('#shop').innerHTML=shopHTML();toast('נוסף לרשימה')});
+    stage.querySelector('#likemsg').textContent=(added.length?tr('נוסף: ')+added.join(', ')+'. ':'')+(notes.length?tr('לא מצאתי מנה ל: ')+notes.join(', ')+tr(', שמרתי בהערה.'):'');return}
+  const i=e.target.elements.x,v=i.value.trim();if(!v)return;EXTRA.push(v.slice(0,60));i.value='';save();stage.querySelector('#shop').innerHTML=shopHTML();toast(tr('נוסף לרשימה'))});
 stage.addEventListener('input',e=>{if(e.target.dataset.note){INFO[e.target.dataset.note][1]=e.target.value;save()}});
 stage.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.closest('[data-seat],[data-dish]')){e.preventDefault();e.target.closest('[data-seat],[data-dish]').dispatchEvent(new MouseEvent('click',{bubbles:true}))}});
 stage.addEventListener('click',e=>{
@@ -695,14 +1073,14 @@ stage.addEventListener('click',e=>{
   if(t.dataset.edit!==undefined){EDITING=t.dataset.edit;stage.querySelector('#shop').innerHTML=shopHTML();stage.querySelector('.editrow input')?.focus({preventScroll:true})}
   else if(t.hasAttribute('data-editcancel')){EDITING=null;stage.querySelector('#shop').innerHTML=shopHTML()}
   else if(t.dataset.editdel!==undefined){const k=t.dataset.editdel,prev=EDIT[k];
-    if(k.startsWith('x|')){const i=+k.slice(2),n=EXTRA.splice(i,1)[0];EDITING=null;save();stage.querySelector('#shop').innerHTML=shopHTML();toast(`${n} הוסר`,()=>{EXTRA.splice(i,0,n);save();stage.querySelector('#shop').innerHTML=shopHTML()})}
-    else{EDIT[k]={...(prev||{}),del:1};EDITING=null;save();stage.querySelector('#shop').innerHTML=shopHTML();toast('הוסר מהרשימה',()=>{if(prev)EDIT[k]=prev;else delete EDIT[k];save();stage.querySelector('#shop').innerHTML=shopHTML()})}}
+    if(k.startsWith('x|')){const i=+k.slice(2),n=EXTRA.splice(i,1)[0];EDITING=null;save();stage.querySelector('#shop').innerHTML=shopHTML();toast(`${tr('{0} הוסר',n)}`,()=>{EXTRA.splice(i,0,n);save();stage.querySelector('#shop').innerHTML=shopHTML()})}
+    else{EDIT[k]={...(prev||{}),del:1};EDITING=null;save();stage.querySelector('#shop').innerHTML=shopHTML();toast(tr('הוסר מהרשימה'),()=>{if(prev)EDIT[k]=prev;else delete EDIT[k];save();stage.querySelector('#shop').innerHTML=shopHTML()})}}
   else if(t.dataset.tab){showTab(t.dataset.tab)}
   else if(t.hasAttribute('data-home')){showHome()}
   else if(t.hasAttribute('data-menu')){leaveMeal()}
   else if(t.hasAttribute('data-restart')){S.names=[];S.menu=null;S.kosher=null;S.txt={};S.drop={};S.kWho=new Set();clearPlan();leaveMeal(0)}
-  else if(t.hasAttribute('data-serve')){const ids=Object.keys(D).filter(i=>D[i].who.length);try{localStorage.setItem(HK,JSON.stringify({date:'2026-10-30',ids}))}catch(_){}t.disabled=true;t.textContent='✔ נשמר. בפעם הבאה לא אחזור על זה';toast('נשמר')}
-  else if(t.dataset.xdel!==undefined){const n=EXTRA.splice(+t.dataset.xdel,1)[0];save();stage.querySelector('#shop').innerHTML=shopHTML();toast(`${n} נמחק`,()=>{EXTRA.push(n);save();stage.querySelector('#shop').innerHTML=shopHTML()})}
+  else if(t.hasAttribute('data-serve')){const ids=Object.keys(D).filter(i=>D[i].who.length);try{localStorage.setItem(HK,JSON.stringify({date:new Date().toISOString().slice(0,10),ids}))}catch(_){}t.disabled=true;t.textContent=tr('✔ נשמר. בפעם הבאה לא אחזור על זה');toast(tr('נשמר'))}
+  else if(t.dataset.xdel!==undefined){const n=EXTRA.splice(+t.dataset.xdel,1)[0];save();stage.querySelector('#shop').innerHTML=shopHTML();toast(`${tr('{0} נמחק',n)}`,()=>{EXTRA.push(n);save();stage.querySelector('#shop').innerHTML=shopHTML()})}
   else if(t.dataset.prefOpen){SEL={t:'p',id:t.dataset.prefOpen};showTab('t');renderTable();stage.querySelector('#tcard').scrollIntoView({block:'start',behavior:'instant'})}
   else if(t.dataset.pref){
     const [id,w]=t.dataset.pref.split('|'),i=D[id].who.indexOf(w);
@@ -718,15 +1096,15 @@ stage.addEventListener('click',e=>{
     if(t.dataset.rmg){GONE[g]=[];for(const id in D){const i=D[id].who.indexOf(g);if(i>-1){D[id].who.splice(i,1);GONE[g].push([id,i])}}}
     else{GONE[g].reverse().forEach(([id,i])=>D[id].who.splice(i,0,g));delete GONE[g]}
     refreshAll();
-    if(t.dataset.rmg)toast(`${g} ירד מהארוחה`,()=>{GONE[g].reverse().forEach(([id,i])=>D[id].who.splice(i,0,g));delete GONE[g];refreshAll()});
+    if(t.dataset.rmg)toast(`${tr('{0} ירד מהארוחה',g)}`,()=>{GONE[g].reverse().forEach(([id,i])=>D[id].who.splice(i,0,g));delete GONE[g];refreshAll()});
   } else if(t.dataset.rm){
     const [id,w]=t.dataset.rm.split('|'),i=D[id].who.indexOf(w);
     D[id].who.splice(i,1);setWho(id);
-    toast(`${w} ירד מ${D[id].n}`,()=>{D[id].who.splice(i,0,w);setWho(id)});
+    toast(`${tr('{0} ירד מ{1}',w,D[id].n)}`,()=>{D[id].who.splice(i,0,w);setWho(id)});
   } else if(t.hasAttribute('data-check')){const n=t.dataset.name;DONE.has(n)?DONE.delete(n):DONE.add(n);t.classList.toggle('done');save()}
   else if(t.hasAttribute('data-copy')){
-    const txt='רשימת קניות לשישי\n'+shopData().filter(([g])=>g!=='כנראה יש בבית').map(([g,rows])=>g+':\n'+rows.map(r=>`- ${r.n}${r.q?' ('+r.q+')':''}`).join('\n')).join('\n');
-    (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('הועתק!'),()=>toast('אי אפשר להעתיק כאן'));
+    const txt=tr('רשימת קניות לשישי')+'\n'+shopData().filter(([g])=>g!=='כנראה יש בבית').map(([g,rows])=>tr(g)+':\n'+rows.map(r=>`- ${r.n}${r.q?' ('+r.q+')':''}`).join('\n')).join('\n');
+    (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast(tr('הועתק!')),()=>toast(tr('אי אפשר להעתיק כאן')));
   } else if(t.matches('.v2 nav a')){
     e.preventDefault();const sc=stage.querySelector('#sc'),tg=sc.querySelector(t.getAttribute('href'));sc.scrollTo({top:tg.offsetTop-52,behavior:'instant'});
   }
